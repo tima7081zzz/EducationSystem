@@ -27,7 +27,7 @@ public class AddCourseCommandHandler : IRequestHandler<AddCourseCommand, int>
             Description = description,
             Category = category,
             CreatorUserId = userId,
-            CreatedAt = DateTimeOffset.Now,
+            CreatedAt = DateTimeOffset.UtcNow,
             PublicId = CoursePublicIdGenerator.Generate()
         });
 

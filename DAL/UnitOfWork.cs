@@ -12,6 +12,7 @@ public interface IUnitOfWork
     TeacherCourseRepository TeacherCourseRepository { get; }
     StudentCourseRepository StudentCourseRepository { get; }
     AssignmentRepository AssignmentRepository { get; }
+    StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
 }
 
 public class UnitOfWork : IUnitOfWork
@@ -28,6 +29,7 @@ public class UnitOfWork : IUnitOfWork
     public TeacherCourseRepository TeacherCourseRepository { get; }
     public StudentCourseRepository StudentCourseRepository { get; }
     public AssignmentRepository AssignmentRepository { get; }
+    public StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
 
     public UnitOfWork(DataContext dataContext)
     {
@@ -39,6 +41,8 @@ public class UnitOfWork : IUnitOfWork
         TeacherCourseRepository = new TeacherCourseRepository(dataContext.TeacherCourses);
         StudentCourseRepository = new StudentCourseRepository(dataContext.StudentCourses);
         AssignmentRepository = new AssignmentRepository(dataContext.Assignments);
+        StudentAssignmentAttachmentRepository =
+            new StudentAssignmentAttachmentRepository(dataContext.StudentAssignmentAttachments);
     }
 
     public async Task SaveChanges(CancellationToken ct)

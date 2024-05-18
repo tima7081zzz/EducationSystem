@@ -23,9 +23,15 @@ public class CourseController : BaseController
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        var course = await _mediator.Send(new GetCourseQuery(UserId, id));
-        
-        return Ok(course);
+        try
+        {
+            var course = await _mediator.Send(new GetCourseQuery(UserId, id));
+            return Ok(course);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpGet("user-courses")]
@@ -52,17 +58,14 @@ public class CourseController : BaseController
     [HttpPost("join/{publicId}")]
     public async Task<IActionResult> Add(string publicId)
     {
-        var command = new JoinCourseCommand(publicId, UserId);
-
         try
         {
-            await _mediator.Send(command);
+            await _mediator.Send(new JoinCourseCommand(publicId, UserId));
+            return Ok();
         }
         catch (EntityNotFoundException)
         {
             return NotFound();
         }
-        
-        return Ok();
     }
 }

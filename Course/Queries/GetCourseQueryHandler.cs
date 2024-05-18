@@ -20,10 +20,12 @@ public class GetCourseQueryHandler : IRequestHandler<GetCourseQuery, CourseModel
         var course = await _unitOfWork.CourseRepository.GetWithCourses(request.Id, ct);
         var isTeacher = course?.TeacherCourses.Any(x => x.TeacherUserId == request.UserId);
         
-        if (course is null || !isTeacher!.Value || course.StudentCourses.All(x => x.UserId != request.UserId))
+        if (course is null || (!isTeacher!.Value && course.StudentCourses.All(x => x.UserId != request.UserId)))
         {
             throw new EntityNotFoundException();
         }
+
+        var courseAssignments = await _unitOfWork.AssignmentRepository.GetByCourse(course.Id, ct);
 
         return new CourseModel
         {
@@ -32,7 +34,13 @@ public class GetCourseQueryHandler : IRequestHandler<GetCourseQuery, CourseModel
             Name = course.Name,
             Description = course.Description,
             Category = course.Category,
-            IsTeacher = isTeacher.Value
+            IsTeacher = isTeacher.Value,
+            Assignments = courseAssignments.Select(x => new CourseAssignmentModel
+            {
+                Id = x.Id,
+                Title = x.Title,
+                CreatedAt = x.CreatedAt,
+            })
         };
     }
 }
@@ -45,4 +53,13 @@ public class CourseModel
     public string? Description { get; set; }
     public string? Category { get; set; }
     public bool IsTeacher { get; set; }
+    public IEnumerable<CourseAssignmentModel> Assignments { get; set; } = [];
+
+}
+
+public class CourseAssignmentModel
+{
+    public int Id { get; set; }
+    public required string Title { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 }

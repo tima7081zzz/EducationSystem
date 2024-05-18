@@ -11,6 +11,7 @@ public interface IUnitOfWork
     CourseRepository CourseRepository { get; }
     TeacherCourseRepository TeacherCourseRepository { get; }
     StudentCourseRepository StudentCourseRepository { get; }
+    AssignmentRepository AssignmentRepository { get; }
 }
 
 public class UnitOfWork : IUnitOfWork
@@ -26,6 +27,7 @@ public class UnitOfWork : IUnitOfWork
     public CourseRepository CourseRepository { get; }
     public TeacherCourseRepository TeacherCourseRepository { get; }
     public StudentCourseRepository StudentCourseRepository { get; }
+    public AssignmentRepository AssignmentRepository { get; }
 
     public UnitOfWork(DataContext dataContext)
     {
@@ -36,6 +38,7 @@ public class UnitOfWork : IUnitOfWork
         CourseRepository = new CourseRepository(dataContext.Courses);
         TeacherCourseRepository = new TeacherCourseRepository(dataContext.TeacherCourses);
         StudentCourseRepository = new StudentCourseRepository(dataContext.StudentCourses);
+        AssignmentRepository = new AssignmentRepository(dataContext.Assignments);
     }
 
     public async Task SaveChanges(CancellationToken ct)

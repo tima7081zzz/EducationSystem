@@ -15,5 +15,7 @@ public class DataContext : DbContext
     public DbSet<TeacherCourse> TeacherCourses { get; set; }
 
     public DbSet<StudentCourse> StudentCourses { get; set; }
+
+    public DbSet<Assignment> Assignments { get; set; }
     //public DbSet<UserRole> UserRoles { get; set; }
 }

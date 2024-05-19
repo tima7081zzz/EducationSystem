@@ -23,7 +23,7 @@ public class AuthController : BaseController
         return View("Login");
     }
 
-    [HttpPost]
+    [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserDto loginUserModel, CancellationToken ct)
     {
         var user = await _loginService.LoginUser(loginUserModel, ct);
@@ -34,9 +34,10 @@ public class AuthController : BaseController
 
         await Authenticate(user);
 
-        return Ok();
+        return Redirect(loginUserModel.ReturnUrl);
     }
     
+    [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserViewModel viewModel, CancellationToken ct)
     {
         if (!ModelState.IsValid)
@@ -58,7 +59,7 @@ public class AuthController : BaseController
 
         await Authenticate(user);
 
-        return View();
+        return Redirect(viewModel.ReturnUrl);
     }
 
     private async Task Authenticate(UserDto user)

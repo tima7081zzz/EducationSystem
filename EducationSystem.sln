@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{11415957-2214-4570-8A8C-245784DC5F9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Presentation\Web\Web.csproj", "{11415957-2214-4570-8A8C-245784DC5F9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{9094581B-6A9A-4384-A843-D1A272B3BBC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Application\Auth\Auth.csproj", "{9094581B-6A9A-4384-A843-D1A272B3BBC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{3CFFB1CB-DCAF-4575-8833-A036B6BD04E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "Infrastructure\DAL\DAL.csproj", "{3CFFB1CB-DCAF-4575-8833-A036B6BD04E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{FB6205E4-47E6-4AD9-856F-7C577D87DB2D}"
 EndProject
@@ -12,13 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{66E3D141-5A90-4B85-A6A4-39EED490C24F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Course", "Course\Course.csproj", "{FBCF73C5-12F2-4134-8AE1-66757AB1F010}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Course", "Application\Course\Course.csproj", "{FBCF73C5-12F2-4134-8AE1-66757AB1F010}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{E8074CD7-D9A8-49C9-BB77-077E140FA6F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Application\Core\Core.csproj", "{E8074CD7-D9A8-49C9-BB77-077E140FA6F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment", "Assignment\Assignment.csproj", "{3BEC64D8-D668-4DD4-AC64-42AACD21A15D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment", "Application\Assignment\Assignment.csproj", "{3BEC64D8-D668-4DD4-AC64-42AACD21A15D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlobStorage", "BlobStorage\BlobStorage.csproj", "{537102DA-F47A-4769-A387-4DC16FFC15D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlobStorage", "Infrastructure\BlobStorage\BlobStorage.csproj", "{537102DA-F47A-4769-A387-4DC16FFC15D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

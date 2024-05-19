@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DAL.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Entities;
 
 //move to no sql db (maybe?)
-[Index(nameof(CourseId))]
+[Index(nameof(CourseId), Name = Indexes.AssignmentCourseId)]
 public class Assignment
 {
     [Key]

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using DAL.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Entities;
 
-[Index(nameof(Email))]
+[Index(nameof(Email), IsUnique = true, Name = Indexes.UserEmail)]
 public class User
 {
     [Key]

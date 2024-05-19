@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DAL.Constants;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Entities;
 
-[Index(nameof(UserId), nameof(AssignmentId))]
+[Index(nameof(UserId), nameof(AssignmentId), Name = Indexes.StudentAssignmentUserIdAssignmentId, IsUnique = true)]
 public class StudentAssignment
 {
     [Key] public int Id { get; set; }

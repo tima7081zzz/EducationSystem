@@ -14,20 +14,10 @@ public class User
     public required string Email { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 
-    //public ICollection<UserRole> UserRoles { get; set; } = Array.Empty<UserRole>();
-    /*public ICollection<Professor> Professors { get; set; }
-    public ICollection<UserActivity> UserActivities { get; set; }
-    public ICollection<UserGroup> UserGroups { get; set; }*/
-}
-
-public enum UserRoleType : byte
-{
-    [Description("Owner")]
-    Owner = 0,
-
-    [Description("Professor")]
-    Professor = 1,
-
-    [Description("Student")]
-    Student = 2,
+    public ICollection<Assignment> Assignments { get; set; } = [];
+    public ICollection<Course> Courses { get; set; } = [];
+    public ICollection<StudentAssignment> StudentAssignments { get; set; } = [];
+    public ICollection<StudentAssignmentAttachment> StudentAssignmentAttachments { get; set; } = [];
+    public ICollection<StudentCourse> StudentCourses { get; set; } = [];
+    public ICollection<TeacherCourse> TeacherCourses { get; set; } = [];
 }

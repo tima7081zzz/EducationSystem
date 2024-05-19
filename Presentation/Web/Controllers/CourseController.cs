@@ -55,8 +55,8 @@ public class CourseController : BaseController
         return Ok(courseId);
     }
     
-    [HttpPost("join/{publicId}")]
-    public async Task<IActionResult> Add(string publicId)
+    [HttpPost("{publicId}/join")]
+    public async Task<IActionResult> Join(string publicId)
     {
         try
         {

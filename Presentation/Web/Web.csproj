@@ -18,4 +18,27 @@
       <ProjectReference Include="..\..\Application\Course\Course.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="FrontEnd\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="FrontEnd\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="FrontEnd\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="FrontEnd\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="FrontEnd\education-system\package-lock.json" />
+      <_ContentIncludedByDefault Remove="FrontEnd\education-system\package.json" />
+      <_ContentIncludedByDefault Remove="FrontEnd\education-system\public\manifest.json" />
+      <_ContentIncludedByDefault Remove="FrontEnd\education-system\tsconfig.json" />
+    </ItemGroup>
+
 </Project>

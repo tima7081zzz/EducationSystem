@@ -4,6 +4,7 @@ using Auth.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Web.Models.ViewModels;
 
 namespace Web.Controllers.Auth;
 
@@ -25,8 +26,8 @@ public class AuthController : BaseController
     [HttpPost]
     public async Task<IActionResult> Login(LoginUserDto loginUserModel, CancellationToken ct)
     {
-        var user = await _loginService.GetUser(loginUserModel, ct);
-        if (user == null)
+        var user = await _loginService.LoginUser(loginUserModel, ct);
+        if (user is null)
         {
             return RedirectToAction("Login");
         }
@@ -34,6 +35,30 @@ public class AuthController : BaseController
         await Authenticate(user);
 
         return Ok();
+    }
+    
+    public async Task<IActionResult> Register(RegisterUserViewModel viewModel, CancellationToken ct)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(viewModel);
+        }
+
+        var user = await _loginService.RegisterUser(new RegisterUserDto
+        {
+            Fullname = viewModel.Fullname,
+            Email = viewModel.Email,
+            Password = viewModel.Password,
+        }, ct);
+
+        if (user is null)
+        {
+            return View(viewModel);
+        }
+
+        await Authenticate(user);
+
+        return View();
     }
 
     private async Task Authenticate(UserDto user)

@@ -7,6 +7,8 @@ using Web.Models.RequestModels;
 
 namespace Web.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class AssignmentController : BaseController
 {
     private readonly IMediator _mediator;

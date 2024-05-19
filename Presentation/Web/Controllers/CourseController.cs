@@ -9,7 +9,8 @@ using Web.Models.ResponseModels;
 
 namespace Web.Controllers;
 
-[Route("course")]
+[Route("api/[controller]")]
+[ApiController]
 [Authorize]
 public class CourseController : BaseController
 {

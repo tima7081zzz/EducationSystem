@@ -72,4 +72,24 @@ public class AssignmentController : BaseController
             return NotFound();
         }
     }
+    
+    [HttpPost("/{assignmentId:int}/submit")]
+    public async Task<IActionResult> Submit(int assignmentId, CancellationToken ct)
+    {
+        try
+        {
+            var command = new SubmitAssignmentCommand(UserId, assignmentId);
+            await _mediator.Send(command, ct);
+
+            return Ok();
+        }
+        catch (WrongOperationException)
+        {
+            return Forbid();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

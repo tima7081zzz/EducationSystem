@@ -13,23 +13,19 @@ public interface IUnitOfWork
     StudentCourseRepository StudentCourseRepository { get; }
     AssignmentRepository AssignmentRepository { get; }
     StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
+    StudentAssignmentRepository StudentAssignmentRepository { get; }
 }
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly DataContext _dataContext;
-
-    public IDbContextTransaction BeginTransaction()
-    {
-        return _dataContext.Database.CurrentTransaction ?? _dataContext.Database.BeginTransaction();
-    }
-
     public UserRepository UserRepository { get; }
     public CourseRepository CourseRepository { get; }
     public TeacherCourseRepository TeacherCourseRepository { get; }
     public StudentCourseRepository StudentCourseRepository { get; }
     public AssignmentRepository AssignmentRepository { get; }
     public StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
+    public StudentAssignmentRepository StudentAssignmentRepository { get; }
 
     public UnitOfWork(DataContext dataContext)
     {
@@ -41,8 +37,13 @@ public class UnitOfWork : IUnitOfWork
         TeacherCourseRepository = new TeacherCourseRepository(dataContext.TeacherCourses);
         StudentCourseRepository = new StudentCourseRepository(dataContext.StudentCourses);
         AssignmentRepository = new AssignmentRepository(dataContext.Assignments);
-        StudentAssignmentAttachmentRepository =
-            new StudentAssignmentAttachmentRepository(dataContext.StudentAssignmentAttachments);
+        StudentAssignmentAttachmentRepository = new StudentAssignmentAttachmentRepository(dataContext.StudentAssignmentAttachments);
+        StudentAssignmentRepository = new StudentAssignmentRepository(dataContext.StudentAssignments);
+    }
+    
+    public IDbContextTransaction BeginTransaction()
+    {
+        return _dataContext.Database.CurrentTransaction ?? _dataContext.Database.BeginTransaction();
     }
 
     public async Task SaveChanges(CancellationToken ct)

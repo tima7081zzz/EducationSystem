@@ -19,7 +19,7 @@ public class AddCourseCommandHandler : IRequestHandler<AddCourseCommand, int>
     {
         var (name, description, category, userId) = request;
         
-        var transaction = _unitOfWork.BeginTransaction();
+        await using var transaction = _unitOfWork.BeginTransaction();
         
         var course = _unitOfWork.CourseRepository.Add(new DAL.Entities.Course
         {

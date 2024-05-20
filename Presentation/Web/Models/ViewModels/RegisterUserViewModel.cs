@@ -5,20 +5,20 @@ namespace Web.Models.ViewModels;
 public class RegisterUserViewModel
 {
     [Required]
-    public string Fullname { get; set; }
+    public required string Fullname { get; set; }
     
     [Required]
     [DataType(DataType.EmailAddress)]
-    public string Email { get; set; }
+    public required string Email { get; set; }
 
     [Required]
     [DataType(DataType.Password)]
-    public string Password { get; set; }
+    public required string Password { get; set; }
 
     [Required]
     [DataType(DataType.Password)]
     [Compare(nameof(Password))]
-    public string ConfirmPassword { get; set; }
+    public required string ConfirmPassword { get; set; }
 
-    public string ReturnUrl { get; set; }
+    public required string ReturnUrl { get; set; }
 }

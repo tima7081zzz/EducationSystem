@@ -1,4 +1,5 @@
 ﻿using BlobStorage;
+using BlobStorage.Models;
 using Core.Exceptions;
 using DAL;
 using DAL.Entities;

@@ -1,5 +1,5 @@
 ﻿using Assignment.Commands;
-using BlobStorage;
+using BlobStorage.Models;
 using Core.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

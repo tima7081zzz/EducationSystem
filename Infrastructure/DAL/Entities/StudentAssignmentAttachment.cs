@@ -9,5 +9,7 @@ public class StudentAssignmentAttachment
     public StudentAssignment StudentAssignment { get; set; } = default!;
     public User StudentUser { get; set; } = default!;
     public int StudentUserId { get; set; }
+    
+    [StringLength(255)]
     public required string BlobName { get; set; }
 }

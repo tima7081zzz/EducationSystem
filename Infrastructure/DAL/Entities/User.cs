@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using DAL.Constants;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +9,14 @@ public class User
 {
     [Key]
     public int Id { get; set; }
+    
+    [StringLength(255)]
     public required string Fullname { get; set; }
+    
+    [StringLength(255)]
     public required string Password { get; set; }
+    
+    [StringLength(255)]
     public required string Email { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 

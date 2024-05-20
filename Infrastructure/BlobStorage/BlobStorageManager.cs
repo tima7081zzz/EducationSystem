@@ -1,8 +1,10 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using BlobStorage.Exceptions;
+using BlobStorage.Models;
 using Core.Helpers;
 using Microsoft.Extensions.Options;
+using BlobInfo = BlobStorage.Models.BlobInfo;
 
 namespace BlobStorage;
 

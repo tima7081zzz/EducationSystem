@@ -33,7 +33,7 @@ public class AddCourseCommandHandler : IRequestHandler<AddCourseCommand, int>
 
         _unitOfWork.TeacherCourseRepository.Add(new TeacherCourse
         {
-            TeacherUserId = userId,
+            UserId = userId,
             CourseId = course.Id
         });
 

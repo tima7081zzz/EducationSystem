@@ -27,7 +27,7 @@ public class JoinCourseCommandHandler : IRequestHandler<JoinCourseCommand>
         }
 
         if (course.CreatorUserId == userId || 
-            course.TeacherCourses.Any(x => x.TeacherUserId == userId) ||
+            course.TeacherCourses.Any(x => x.UserId == userId) ||
             course.StudentCourses.Any(x => x.UserId == userId))
         {
             throw new WrongOperationException();

@@ -20,4 +20,18 @@ public class DataContext : DbContext
     public DbSet<StudentAssignmentAttachment> StudentAssignmentAttachments { get; set; }
     public DbSet<StudentAssignment> StudentAssignments { get; set; }
     //public DbSet<UserRole> UserRoles { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>(x =>
+        {
+            x.HasMany(x => x.Courses).WithOne(x => x.CreatorUser).OnDelete(DeleteBehavior.NoAction);
+            x.HasMany(x => x.StudentCourses).WithOne(x => x.User).OnDelete(DeleteBehavior.NoAction);
+            x.HasMany(x => x.TeacherCourses).WithOne(x => x.User).OnDelete(DeleteBehavior.NoAction);
+            x.HasMany(x => x.Assignments).WithOne(x => x.CreatorTeacher).OnDelete(DeleteBehavior.NoAction);
+            x.HasMany(x => x.StudentAssignmentAttachments).WithOne(x => x.StudentUser).OnDelete(DeleteBehavior.NoAction);
+        });
+    }
 }

@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Entities;
 
-[Index(nameof(TeacherUserId), Name = Indexes.TeacherCourseTeacherUserId)]
+[Index(nameof(UserId), Name = Indexes.TeacherCourseTeacherUserId)]
 public class TeacherCourse
 {
     [Key]
     public int Id { get; set; }
-    public User TeacherUser { get; set; } = default!;
-    public int TeacherUserId { get; set; }
+    public User User { get; set; } = default!;
+    public int UserId { get; set; }
     public Course Course { get; set; } = default!;
     public int CourseId { get; set; }
 }

@@ -18,7 +18,7 @@ public class GetCourseQueryHandler : IRequestHandler<GetCourseQuery, CourseModel
     public async Task<CourseModel> Handle(GetCourseQuery request, CancellationToken ct)
     {
         var course = await _unitOfWork.CourseRepository.GetWithCourses(request.Id, ct);
-        var isTeacher = course?.TeacherCourses.Any(x => x.TeacherUserId == request.UserId);
+        var isTeacher = course?.TeacherCourses.Any(x => x.UserId == request.UserId);
         
         if (course is null || (!isTeacher!.Value && course.StudentCourses.All(x => x.UserId != request.UserId)))
         {

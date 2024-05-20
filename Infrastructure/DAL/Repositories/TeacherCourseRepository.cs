@@ -8,7 +8,7 @@ public class TeacherCourseRepository(DbSet<TeacherCourse> entities) : GenericRep
     public async Task<List<UserCourseDto>> GetForUser(int userId, CancellationToken ct)
     {
         return await Entities
-            .Where(x => x.TeacherUserId == userId)
+            .Where(x => x.UserId == userId)
             .Select(x => new UserCourseDto
             {
                 Id = x.CourseId,

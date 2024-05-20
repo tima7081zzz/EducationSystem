@@ -19,6 +19,7 @@ public class Assignment
     
     [StringLength(512)]
     public string? Description { get; set; }
+    public User CreatorTeacher { get; set; } = default!;
     public int CreatorTeacherId { get; set; }
     public DateTimeOffset Deadline { get; set; }
     public DateTimeOffset CreatedAt { get; set; }

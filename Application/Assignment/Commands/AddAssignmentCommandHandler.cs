@@ -31,7 +31,7 @@ public class AddAssignmentCommandHandler : IRequestHandler<AddAssignmentCommand,
             throw new EntityNotFoundException();
         }
 
-        if (course.TeacherCourses.All(x => x.TeacherUserId != userId))
+        if (course.TeacherCourses.All(x => x.UserId != userId))
         {
             throw new WrongOperationException();
         }

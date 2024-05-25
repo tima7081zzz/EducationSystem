@@ -1,4 +1,5 @@
 ﻿using Assignment.Commands;
+using Assignment.Queries;
 using BlobStorage.Models;
 using Core.Exceptions;
 using MediatR;
@@ -21,6 +22,20 @@ public class AssignmentController : BaseController
     public AssignmentController(IMediator mediator)
     {
         _mediator = mediator;
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> Get(int id, CancellationToken ct)
+    {
+        try
+        {
+            var assignment = await _mediator.Send(new GetAssignmentQuery(UserId, id), ct);
+            return Ok(assignment);
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost]

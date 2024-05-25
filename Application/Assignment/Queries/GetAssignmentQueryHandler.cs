@@ -20,7 +20,7 @@ public class GetAssignmentQueryHandler : IRequestHandler<GetAssignmentQuery, Ass
     {
         var (userId, id) = request;
         
-        var studentAssignment = await _unitOfWork.StudentAssignmentRepository.Get(userId, id, ct);
+        var studentAssignment = await _unitOfWork.StudentAssignmentRepository.GetWithAssignmentAndAttachments(userId, id, ct);
         if (studentAssignment is null)
         {
             var assignment = await ValidateOperation(request, ct);
@@ -43,7 +43,7 @@ public class GetAssignmentQueryHandler : IRequestHandler<GetAssignmentQuery, Ass
             Attachments = studentAssignment.StudentAssignmentAttachments.Select(x=> new AttachmentModel
             {
                 Id = x.Id,
-                Name = $"{x.FileName}.{x.FileContentType}"
+                Name = x.FileName,
             })
         };
     }

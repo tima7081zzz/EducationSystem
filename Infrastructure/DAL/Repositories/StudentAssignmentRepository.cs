@@ -10,4 +10,12 @@ public class StudentAssignmentRepository(DbSet<StudentAssignment> entities) : Ge
         return await Entities
             .FirstOrDefaultAsync(x => x.UserId == userId && x.AssignmentId == assignmentId, ct);
     }
+    
+    public async Task<StudentAssignment?> GetWithAssignmentAndAttachments(int userId, int assignmentId, CancellationToken ct)
+    {
+        return await Entities
+            .Include(x => x.Assignment)
+            .Include(x => x.StudentAssignmentAttachments)
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.AssignmentId == assignmentId, ct);
+    }
 }

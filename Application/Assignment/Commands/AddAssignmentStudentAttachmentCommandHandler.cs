@@ -42,7 +42,6 @@ public class AddAssignmentStudentAttachmentCommandHandler : IRequestHandler<AddA
             StudentUserId = request.UserId,
             BlobName = blobInfo.BlobName,
             FileName = request.BlobFileBase.FileName,
-            FileContentType = request.BlobFileBase.ContentType, 
         });
 
         await _unitOfWork.SaveChanges(ct);

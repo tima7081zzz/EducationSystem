@@ -18,7 +18,4 @@ public class StudentAssignmentAttachment
     
     [StringLength(512)]
     public required string FileName { get; set; }
-    
-    [StringLength(50)]
-    public string? FileContentType { get; set; }
 }

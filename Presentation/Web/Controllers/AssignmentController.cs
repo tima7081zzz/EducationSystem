@@ -60,8 +60,8 @@ public class AssignmentController : BaseController
         }
     }
 
-    [HttpPost("/{assignmentId:int}/upload-attachment")]
-    public async Task<IActionResult> Upload(int assignmentId, IFormFile file, CancellationToken ct)
+    [HttpPost("{assignmentId:int}/upload-attachment")]
+    public async Task<IActionResult> Upload(int assignmentId, [FromForm] IFormFile file, CancellationToken ct)
     {
         if (file.Length is < 1 or > MaxFileSizeMb * BytesInMb)
         {
@@ -92,7 +92,7 @@ public class AssignmentController : BaseController
         }
     }
     
-    [HttpPost("/{assignmentId:int}/submit")]
+    [HttpPost("{assignmentId:int}/submit")]
     public async Task<IActionResult> Submit(int assignmentId, CancellationToken ct)
     {
         try

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
+import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress, List, ListItem, ListItemText, ListItemIcon, Divider } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { getAssignmentDetails, uploadAttachment, submitAssignment, unsubmitAssignment, AssignmentModel, StudentCourseTaskStatus } from '../services/assignmentService';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 const AssignmentDetailsPage: React.FC = () => {
@@ -125,36 +126,40 @@ const AssignmentDetailsPage: React.FC = () => {
         {/* Left Section: Assignment Details */}
         <Grid item xs={12} md={8}>
           <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
-            <Box>
+            <Box display="flex" alignItems="center" mb={2}>
+              <AssignmentIcon fontSize="large" sx={{ mr: 2 }} />
               <Typography variant="h5" component="h1" gutterBottom>
                 {assignment.title}
               </Typography>
-              <Typography variant="body1" component="p" gutterBottom>
-                {assignment.description}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" gutterBottom>
-                Created on: {new Date(assignment.createdAt).toLocaleDateString()}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" gutterBottom>
-                Deadline: {new Date(assignment.deadline).toLocaleDateString()}
-              </Typography>
+            </Box>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
+              {new Date(assignment.createdAt).toLocaleDateString()}
+            </Typography>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
               {assignment.maxGrade && (
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  Max Grade: {assignment.maxGrade}
+                <Typography variant="body2" color="textSecondary">
+                  0/{assignment.maxGrade}
                 </Typography>
               )}
+              <Typography variant="body2" color="textSecondary">
+                {new Date(assignment.deadline).toLocaleDateString()}
+              </Typography>
             </Box>
+            <Divider sx={{ mb: 2 }} color="blue" />
+            <Typography variant="body1" component="p" gutterBottom>
+              {assignment.description}
+            </Typography>
           </Paper>
         </Grid>
 
         {/* Right Section: Attachments and Submissions */}
         <Grid item xs={12} md={4}>
           <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
               <Typography variant="h6" gutterBottom>
                 Attachments
               </Typography>
-              <Typography variant="body2"  color={statusColor}>
+              <Typography variant="body2" color={statusColor}>
                 {statusLabel}
               </Typography>
             </Box>
@@ -173,6 +178,7 @@ const AssignmentDetailsPage: React.FC = () => {
                 <Button
                   variant="contained"
                   component="label"
+                  sx={{ marginTop: '10px' }}
                 >
                   Upload Attachment
                   <input

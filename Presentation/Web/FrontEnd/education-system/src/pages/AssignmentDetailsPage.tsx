@@ -92,6 +92,19 @@ const AssignmentDetailsPage: React.FC = () => {
     }
   };
 
+  const getStatusLabel = (status: StudentCourseTaskStatus): { label: string, color: string } => {
+    switch (status) {
+      case StudentCourseTaskStatus.NotSubmitted:
+        return { label: 'Not Submitted', color: '' };
+      case StudentCourseTaskStatus.SubmittedLate:
+        return { label: 'Submitted Late', color: 'red' };
+      case StudentCourseTaskStatus.SubmittedInTime:
+        return { label: 'Submitted In Time', color: 'green' };
+      default:
+        return { label: 'Unknown', color: '' };
+    }
+  };
+
   if (isLoading) {
     return <CircularProgress />;
   }
@@ -103,6 +116,8 @@ const AssignmentDetailsPage: React.FC = () => {
   if (!assignment) {
     return <Typography>Assignment not found.</Typography>;
   }
+
+  const { label: statusLabel, color: statusColor } = getStatusLabel(assignment.status);
 
   return (
     <Container>
@@ -135,16 +150,21 @@ const AssignmentDetailsPage: React.FC = () => {
         {/* Right Section: Attachments and Submissions */}
         <Grid item xs={12} md={4}>
           <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Attachments
-            </Typography>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography variant="h6" gutterBottom>
+                Attachments
+              </Typography>
+              <Typography variant="body2"  color={statusColor}>
+                {statusLabel}
+              </Typography>
+            </Box>
             <List>
               {assignment.attachments.map((attachment) => (
-                <ListItem key={attachment.id}>
-                  <ListItemIcon>
-                    <AttachFileIcon />
+                <ListItem key={attachment.id} sx={{ padding: '4px 0' }}>
+                  <ListItemIcon sx={{ minWidth: '30px' }}>
+                    <AttachFileIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary={attachment.name} />
+                  <ListItemText primaryTypographyProps={{ variant: 'body2' }} primary={attachment.name} />
                 </ListItem>
               ))}
             </List>

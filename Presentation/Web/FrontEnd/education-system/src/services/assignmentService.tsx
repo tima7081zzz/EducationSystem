@@ -59,4 +59,8 @@ const unsubmitAssignment = async (assignmentId: number): Promise<void> => {
    await axios.post(`/api/assignment/${assignmentId}/unsubmit`);
 };
 
-export { getAssignmentDetails, addAssignment, uploadAttachment, submitAssignment, unsubmitAssignment };
+const deleteAttachment = async (attachmentId: number): Promise<void> => {
+    await axios.delete(`/api/assignment/attachment/${attachmentId}`);
+ };
+
+export { getAssignmentDetails, addAssignment, uploadAttachment, submitAssignment, unsubmitAssignment, deleteAttachment };

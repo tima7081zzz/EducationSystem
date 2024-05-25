@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress, List, ListItem, ListItemText, ListItemIcon, Divider } from '@mui/material';
+import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress, List, ListItem, ListItemText, ListItemIcon, IconButton, Divider } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { getAssignmentDetails, uploadAttachment, submitAssignment, unsubmitAssignment, AssignmentModel, StudentCourseTaskStatus } from '../services/assignmentService';
+import { getAssignmentDetails, uploadAttachment, submitAssignment, unsubmitAssignment, deleteAttachment, AssignmentModel, StudentCourseTaskStatus } from '../services/assignmentService';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const AssignmentDetailsPage: React.FC = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
@@ -93,6 +94,17 @@ const AssignmentDetailsPage: React.FC = () => {
     }
   };
 
+  const handleDeleteAttachment = async (attachmentId: number) => {
+    try {
+      await deleteAttachment(attachmentId);
+      const updatedAssignment = await getAssignmentDetails(Number(assignmentId));
+      setAssignment(updatedAssignment);
+    } catch (error) {
+      console.error('Failed to delete attachment:', error);
+      alert('Failed to delete attachment. Please try again later.');
+    }
+  };
+
   const getStatusLabel = (status: StudentCourseTaskStatus): { label: string, color: string } => {
     switch (status) {
       case StudentCourseTaskStatus.NotSubmitted:
@@ -145,7 +157,7 @@ const AssignmentDetailsPage: React.FC = () => {
                 {new Date(assignment.deadline).toLocaleDateString()}
               </Typography>
             </Box>
-            <Divider sx={{ mb: 2 }} color="blue" />
+            <Divider sx={{ mb: 2 }} />
             <Typography variant="body1" component="p" gutterBottom>
               {assignment.description}
             </Typography>
@@ -170,6 +182,9 @@ const AssignmentDetailsPage: React.FC = () => {
                     <AttachFileIcon fontSize="small" />
                   </ListItemIcon>
                   <ListItemText primaryTypographyProps={{ variant: 'body2' }} primary={attachment.name} />
+                  <IconButton edge="end" onClick={() => handleDeleteAttachment(attachment.id)}>
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
                 </ListItem>
               ))}
             </List>

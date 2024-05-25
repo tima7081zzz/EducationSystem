@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Grid, Fab, Menu, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CourseCard from '../components/CourseCard';
-import { getUserCourses, createCourse, UserCourseModel } from '../services/courseService';
+import { getUserCourses, createCourse, UserCourseModel, joinCourse } from '../services/courseService';
 import JoinCourseDialog from '../components/JoinCourseDialog';
 import CreateCourseDialog from '../components/CreateCourseDialog';
 
@@ -33,9 +33,18 @@ const HomePage: React.FC = () => {
     setAnchorEl(null);
   };
 
-  const handleJoinCourse = (courseId: string) => {
-    // Handle join course logic here
-    setJoinCourseDialogOpen(false);
+  const handleJoinCourse = async (publicId: string) => {
+    try {
+      await joinCourse(publicId);
+      // Optionally, you can navigate to the course page after joining
+      // history.push(`/course/${publicId}`);
+      alert('You have successfully joined the course!');
+      setJoinCourseDialogOpen(false);
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to join course:', error);
+      alert('Failed to join the course. Please try again later.');
+    }  
   };
 
   const handleCreateCourse = async (course: { name: string; description: string; category: string }) => {

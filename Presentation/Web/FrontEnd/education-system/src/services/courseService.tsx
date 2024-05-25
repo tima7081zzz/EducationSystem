@@ -55,4 +55,8 @@ const getCourseDetails = async (courseId: number): Promise<CourseModel> => {
   return response.data;
 };
 
-export { getUserCourses, createCourse, getCourseDetails };
+const joinCourse = async (publicId: string): Promise<void> => {
+  await axios.post(`/api/course/${publicId}/join`);
+};
+
+export { getUserCourses, createCourse, getCourseDetails, joinCourse };

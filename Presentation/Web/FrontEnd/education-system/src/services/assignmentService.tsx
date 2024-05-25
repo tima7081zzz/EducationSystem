@@ -22,7 +22,14 @@ export interface AttachmentModel {
     deadline: string;
     maxGrade?: number;
     attachments: AttachmentModel[];
+    status: StudentCourseTaskStatus;
 }
+
+export enum StudentCourseTaskStatus {
+    NotSubmitted = 0,
+    SubmittedLate = 1,
+    SubmittedInTime = 2,
+  }
 
 const getAssignmentDetails = async (assignmentId: number): Promise<AssignmentModel> => {
   const response = await axios.get<AssignmentModel>(`/api/assignment/${assignmentId}`);
@@ -42,6 +49,14 @@ const uploadAttachment = async (assignmentId: number, file: File): Promise<void>
         'Content-Type': 'multipart/form-data',
       },
     });
-  };
+ };
 
-export { getAssignmentDetails, addAssignment, uploadAttachment };
+const submitAssignment = async (assignmentId: number, data: { comment: string }): Promise<void> => {
+   await axios.post(`/api/assignment/${assignmentId}/submit`, data);
+};
+
+const unsubmitAssignment = async (assignmentId: number): Promise<void> => {
+   await axios.post(`/api/assignment/${assignmentId}/unsubmit`);
+};
+
+export { getAssignmentDetails, addAssignment, uploadAttachment, submitAssignment, unsubmitAssignment };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { getAssignmentDetails, uploadAttachment, AssignmentModel } from '../services/assignmentService';
+import { getAssignmentDetails, uploadAttachment, submitAssignment, unsubmitAssignment, AssignmentModel, StudentCourseTaskStatus } from '../services/assignmentService';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 const AssignmentDetailsPage: React.FC = () => {
@@ -65,8 +65,31 @@ const AssignmentDetailsPage: React.FC = () => {
       return;
     }
     setError(null);
-    // Handle submission logic here
-    console.log('Submitting assignment with text:', submissionText, 'and attachment:', attachment);
+
+    try {
+      if (assignmentId) {
+        await submitAssignment(Number(assignmentId), { comment: submissionText });
+        const updatedAssignment = await getAssignmentDetails(Number(assignmentId));
+        setAssignment(updatedAssignment);
+        alert('Assignment submitted successfully!');
+      }
+    } catch (error) {
+      console.error('Failed to submit assignment:', error);
+      alert('Failed to submit assignment. Please try again later.');
+    }
+  };
+
+  const handleUnsubmit = async () => {
+    try {
+      if (assignmentId) {
+        await unsubmitAssignment(Number(assignmentId));
+        const updatedAssignment = await getAssignmentDetails(Number(assignmentId));
+        setAssignment(updatedAssignment);
+      }
+    } catch (error) {
+      console.error('Failed to unsubmit assignment:', error);
+      alert('Failed to unsubmit assignment. Please try again later.');
+    }
   };
 
   if (isLoading) {
@@ -112,49 +135,72 @@ const AssignmentDetailsPage: React.FC = () => {
         {/* Right Section: Attachments and Submissions */}
         <Grid item xs={12} md={4}>
           <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Attachments
-              </Typography>
-              <List>
-                {assignment.attachments.map((attachment) => (
-                  <ListItem key={attachment.id}>
-                    <ListItemIcon>
-                      <AttachFileIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={attachment.name} />
-                  </ListItem>
-                ))}
-              </List>
-            <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Button
-                variant="contained"
-                component="label"
-              >
-                Upload Attachment
-                <input
-                  type="file"
-                  hidden
-                  onChange={handleFileChange}
+            <Typography variant="h6" gutterBottom>
+              Attachments
+            </Typography>
+            <List>
+              {assignment.attachments.map((attachment) => (
+                <ListItem key={attachment.id}>
+                  <ListItemIcon>
+                    <AttachFileIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={attachment.name} />
+                </ListItem>
+              ))}
+            </List>
+            {assignment.status === StudentCourseTaskStatus.NotSubmitted ? (
+              <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  component="label"
+                >
+                  Upload Attachment
+                  <input
+                    type="file"
+                    hidden
+                    onChange={handleFileChange}
+                  />
+                </Button>
+                {attachment && <Typography variant="body2">{attachment.name}</Typography>}
+                <TextField
+                  label="Submission Text"
+                  multiline
+                  rows={4}
+                  value={submissionText}
+                  onChange={handleTextChange}
+                  inputProps={{ maxLength: 300 }}
                 />
-              </Button>
-              {attachment && <Typography variant="body2">{attachment.name}</Typography>}
-              <TextField
-                label="Submission Text"
-                multiline
-                rows={4}
-                value={submissionText}
-                onChange={handleTextChange}
-                inputProps={{ maxLength: 300 }}
-              />
-              {error && <Typography color="error">{error}</Typography>}
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
-            </Box>
+                {error && <Typography color="error">{error}</Typography>}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </Button>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <TextField
+                  label="Submission Text"
+                  multiline
+                  rows={4}
+                  value={submissionText}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+                {error && <Typography color="error">{error}</Typography>}
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleUnsubmit}
+                  sx={{ mt: 2 }}
+                >
+                  Unsubmit
+                </Button>
+              </Box>
+            )}
           </Paper>
         </Grid>
       </Grid>

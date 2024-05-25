@@ -19,6 +19,9 @@ public class StudentAssignment
     public DateTimeOffset? SubmittedAt { get; set; }
     public StudentCourseTaskStatus Status { get; set; } = StudentCourseTaskStatus.NotSubmitted;
 
+    [StringLength(255)]
+    public string? SubmissionComment { get; set; }
+
     public ICollection<StudentAssignmentAttachment> StudentAssignmentAttachments { get; set; } = [];
 }
 

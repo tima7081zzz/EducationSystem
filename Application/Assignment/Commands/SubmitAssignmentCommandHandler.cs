@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Assignment.Commands;
 
-public record SubmitAssignmentCommand(int UserId, int AssignmentId) : IRequest;
+public record SubmitAssignmentCommand(int UserId, int AssignmentId, string? Comment) : IRequest;
 
 public class SubmitAssignmentCommandHandler : IRequestHandler<SubmitAssignmentCommand>
 {
@@ -18,7 +18,7 @@ public class SubmitAssignmentCommandHandler : IRequestHandler<SubmitAssignmentCo
 
     public async Task Handle(SubmitAssignmentCommand request, CancellationToken ct)
     {
-        var (userId, assignmentId) = request;
+        var (userId, assignmentId, comment) = request;
 
         var assignment = await ValidateOperation(request, ct);
 
@@ -26,21 +26,32 @@ public class SubmitAssignmentCommandHandler : IRequestHandler<SubmitAssignmentCo
         var status = assignment.Deadline >= now
             ? StudentCourseTaskStatus.SubmittedInTime
             : StudentCourseTaskStatus.SubmittedLate;
+
+        await using var transaction = _unitOfWork.BeginTransaction();
         
-        _unitOfWork.StudentAssignmentRepository.Add(new StudentAssignment
+        var studentAssignment = await _unitOfWork.StudentAssignmentRepository.Get(userId, assignmentId, ct);
+        if (studentAssignment is null)
         {
-            UserId = userId,
-            AssignmentId = assignmentId,
-            SubmittedAt = now,
-            Status = status
-        });
+            studentAssignment = _unitOfWork.StudentAssignmentRepository.Add(new StudentAssignment
+            {
+                UserId = userId,
+                AssignmentId = assignmentId,
+            });
+            
+            await _unitOfWork.SaveChanges(ct);
+        }
+
+        studentAssignment.SubmittedAt = now;
+        studentAssignment.Status = status;
+        studentAssignment.SubmissionComment = comment;
 
         await _unitOfWork.SaveChanges(ct);
+        await transaction.CommitAsync(ct);
     }
 
     private async Task<DAL.Entities.Assignment> ValidateOperation(SubmitAssignmentCommand request, CancellationToken ct)
     {
-        var (userId, assignmentId) = request;
+        var (userId, assignmentId, _) = request;
         var assignment = await _unitOfWork.AssignmentRepository.Get(assignmentId, ct);
         if (assignment is null)
         {
@@ -51,12 +62,6 @@ public class SubmitAssignmentCommandHandler : IRequestHandler<SubmitAssignmentCo
         if (studentCourse is null)
         {
             throw new EntityNotFoundException();
-        }
-
-        var studentAssignment = await _unitOfWork.StudentAssignmentRepository.Get(userId, assignmentId, ct);
-        if (studentAssignment is not null)
-        {
-            throw new WrongOperationException();
         }
 
         return assignment;

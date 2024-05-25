@@ -93,11 +93,11 @@ public class AssignmentController : BaseController
     }
     
     [HttpPost("{assignmentId:int}/submit")]
-    public async Task<IActionResult> Submit(int assignmentId, CancellationToken ct)
+    public async Task<IActionResult> Submit(int assignmentId, SubmitAssignmentRequestModel model, CancellationToken ct)
     {
         try
         {
-            var command = new SubmitAssignmentCommand(UserId, assignmentId);
+            var command = new SubmitAssignmentCommand(UserId, assignmentId, model?.Comment);
             await _mediator.Send(command, ct);
 
             return Ok();
@@ -105,6 +105,22 @@ public class AssignmentController : BaseController
         catch (WrongOperationException)
         {
             return Forbid();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+    
+    [HttpPost("{assignmentId:int}/unsubmit")]
+    public async Task<IActionResult> Unsubmit(int assignmentId, CancellationToken ct)
+    {
+        try
+        {
+            var command = new UnsubmitAssignmentCommand(UserId, assignmentId);
+            await _mediator.Send(command, ct);
+
+            return Ok();
         }
         catch (EntityNotFoundException)
         {

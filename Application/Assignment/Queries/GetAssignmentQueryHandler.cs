@@ -42,6 +42,7 @@ public class GetAssignmentQueryHandler : IRequestHandler<GetAssignmentQuery, Ass
             Deadline = studentAssignment.Assignment.Deadline,
             MaxGrade = studentAssignment.Assignment.MaxGrade,
             Status = studentAssignment.Status,
+            SubmissionComment = studentAssignment.SubmissionComment,
             Attachments = studentAssignment.StudentAssignmentAttachments.Select(x=> new AttachmentModel
             {
                 Id = x.Id,
@@ -81,6 +82,7 @@ public class AssignmentModel
     public DateTimeOffset Deadline { get; set; }
     public int? MaxGrade { get; set; }
     public StudentCourseTaskStatus Status { get; set; }
+    public string? SubmissionComment { get; set; }
     public IEnumerable<AttachmentModel> Attachments { get; set; } = [];
 }
 

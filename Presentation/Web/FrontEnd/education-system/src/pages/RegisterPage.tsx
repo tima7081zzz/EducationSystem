@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box, Paper } from '@mui/material';
+import { Container, TextField, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from '../axiosConfig';
+import axios from 'axios';
 
 const RegisterPage: React.FC = () => {
+  const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async () => {
@@ -15,60 +16,71 @@ const RegisterPage: React.FC = () => {
       setError('Passwords do not match');
       return;
     }
+
     try {
-      const response = await axios.post('api/auth/register', { email, password });
-      if (response.status === 200) {
-        navigate('/login');
+      await axios.post('/api/auth/register', { fullname, email, password });
+      navigate('/home');
+    } catch (err : any) {
+      if (err.response.status === 409) {
+        setError('User with such email already exist');
       }
-    } catch (err) {
-      setError('Registration failed');
+      else
+      {
+        setError('Registration failed. Please try again.');
+      }
     }
   };
 
   return (
-    <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ padding: 3, mt: 5 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Register
-        </Typography>
-        <TextField
-          label="Email"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <TextField
-          label="Confirm Password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        {error && <Typography color="error">{error}</Typography>}
-        <Box mt={2}>
-          <Button variant="contained" color="primary" fullWidth onClick={handleRegister}>
-            Register
-          </Button>
-        </Box>
-        <Box mt={2}>
-          <Button variant="text" color="primary" fullWidth onClick={() => navigate('/login')}>
-            Already have an account? Login
-          </Button>
-        </Box>
-      </Paper>
+    <Container maxWidth="sm">
+      <Typography variant="h4" component="h1" gutterBottom>
+        Register
+      </Typography>
+      {error && <Typography color="error">{error}</Typography>}
+      <TextField
+        label="Fullname"
+        fullWidth
+        margin="normal"
+        value={fullname}
+        onChange={(e) => setFullname(e.target.value)}
+        required
+      />
+      <TextField
+        label="Email"
+        type="email"
+        fullWidth
+        margin="normal"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <TextField
+        label="Password"
+        type="password"
+        fullWidth
+        margin="normal"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <TextField
+        label="Confirm Password"
+        type="password"
+        fullWidth
+        margin="normal"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        required
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleRegister}
+        fullWidth
+        style={{ marginTop: '16px' }}
+      >
+        Register
+      </Button>
     </Container>
   );
 };

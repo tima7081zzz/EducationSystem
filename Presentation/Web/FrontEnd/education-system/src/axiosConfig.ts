@@ -16,8 +16,7 @@ axios.interceptors.response.use(
     const { status } = error.response;
     if (status === 401) {
       // If 401 error, redirect to login page
-      const navigate = useNavigate();
-      navigate('/login');
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }

@@ -14,11 +14,4 @@ public class RegisterUserViewModel
     [Required]
     [DataType(DataType.Password)]
     public required string Password { get; set; }
-
-    [Required]
-    [DataType(DataType.Password)]
-    [Compare(nameof(Password))]
-    public required string ConfirmPassword { get; set; }
-
-    public required string ReturnUrl { get; set; }
 }

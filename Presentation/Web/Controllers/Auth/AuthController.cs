@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Auth.Models;
 using Auth.Services;
+using Core.Exceptions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,8 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserDto loginUserModel, CancellationToken ct)
-    { var user = await _loginService.LoginUser(loginUserModel, ct);
+    { 
+        var user = await _loginService.LoginUser(loginUserModel, ct);
         if (user is null)
         {
             return RedirectToAction("Login", "Auth");
@@ -35,26 +37,33 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserViewModel viewModel, CancellationToken ct)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return BadRequest(viewModel);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(viewModel);
+            }
+
+            var user = await _loginService.RegisterUser(new RegisterUserDto
+            {
+                Fullname = viewModel.Fullname,
+                Email = viewModel.Email,
+                Password = viewModel.Password,
+            }, ct);
+
+            if (user is null)
+            {
+                return BadRequest(viewModel);
+            }
+
+            await Authenticate(user);
+
+            return Ok();
         }
-
-        var user = await _loginService.RegisterUser(new RegisterUserDto
+        catch (AlreadyExistsException)
         {
-            Fullname = viewModel.Fullname,
-            Email = viewModel.Email,
-            Password = viewModel.Password,
-        }, ct);
-
-        if (user is null)
-        {
-            return BadRequest(viewModel);
+            return Conflict();
         }
-
-        await Authenticate(user);
-
-        return Redirect(viewModel.ReturnUrl);
     }
 
     private async Task Authenticate(UserDto user)

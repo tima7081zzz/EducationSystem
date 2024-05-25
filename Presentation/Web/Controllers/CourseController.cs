@@ -2,8 +2,8 @@
 using Course.Commands;
 using Course.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web.Attributes;
 using Web.Models.RequestModels;
 using Web.Models.ResponseModels;
 

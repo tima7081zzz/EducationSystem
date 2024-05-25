@@ -3,12 +3,14 @@ using BlobStorage.Models;
 using Core.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Web.Attributes;
 using Web.Models.RequestModels;
 
 namespace Web.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class AssignmentController : BaseController
 {
     private readonly IMediator _mediator;

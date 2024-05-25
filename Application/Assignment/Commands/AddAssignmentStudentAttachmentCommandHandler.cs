@@ -34,12 +34,15 @@ public class AddAssignmentStudentAttachmentCommandHandler : IRequestHandler<AddA
             AssignmentId = request.AssignmentId,
             Status = StudentCourseTaskStatus.NotSubmitted,
         });
+        await _unitOfWork.SaveChanges(ct);
 
         _unitOfWork.StudentAssignmentAttachmentRepository.Add(new StudentAssignmentAttachment
         {
             StudentAssignmentId = studentAssignment.Id,
             StudentUserId = request.UserId,
             BlobName = blobInfo.BlobName,
+            FileName = request.BlobFileBase.FileName,
+            FileContentType = request.BlobFileBase.ContentType, 
         });
 
         await _unitOfWork.SaveChanges(ct);

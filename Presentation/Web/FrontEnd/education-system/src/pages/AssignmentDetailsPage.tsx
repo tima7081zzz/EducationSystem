@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress } from '@mui/material';
+import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { getAssignmentDetails, uploadAttachment, AssignmentModel } from '../services/assignmentService';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 const AssignmentDetailsPage: React.FC = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
@@ -38,17 +39,19 @@ const AssignmentDetailsPage: React.FC = () => {
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    if (file && file.size > 10 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       setError('File size should not exceed 10MB');
       setAttachment(null);
     } else {
       setError(null);
       setAttachment(file || null);
-      
+
       // Upload attachment immediately after selection
       try {
         await uploadAttachment(Number(assignmentId), file);
-        alert('Attachment uploaded successfully!');
+        // Update assignment details to include the newly uploaded attachment
+        const updatedAssignment = await getAssignmentDetails(Number(assignmentId));
+        setAssignment(updatedAssignment);
         setAttachment(null); // Clear the selected file after upload
       } catch (error) {
         console.error('Failed to upload attachment:', error);
@@ -66,9 +69,8 @@ const AssignmentDetailsPage: React.FC = () => {
       return;
     }
     setError(null);
-    
     // Handle submission logic here
-    console.log('Submitting assignment with text:', submissionText);
+    console.log('Submitting assignment with text:', submissionText, 'and attachment:', attachment);
     handleCloseSubmit();
   };
 
@@ -112,6 +114,21 @@ const AssignmentDetailsPage: React.FC = () => {
             </Box>
           </Grid>
           <Grid item xs={12} md={4}>
+            <Box>
+              <Typography gutterBottom>
+                My Attachments
+              </Typography>
+              <List>
+                {assignment.attachments.map((attachment) => (
+                  <ListItem key={attachment.id}>
+                    <ListItemIcon>
+                      <AttachFileIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={attachment.name} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
             <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <Button
                 variant="contained"

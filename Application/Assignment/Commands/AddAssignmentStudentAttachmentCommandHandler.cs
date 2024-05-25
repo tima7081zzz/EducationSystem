@@ -26,15 +26,21 @@ public class AddAssignmentStudentAttachmentCommandHandler : IRequestHandler<AddA
 
         var blobInfo = await _blobManager.Upload(request.BlobFileBase, ct);
 
+        var studentAssignment =
+            await _unitOfWork.StudentAssignmentRepository.Get(request.UserId, request.AssignmentId, ct);
+
         await using var transaction = _unitOfWork.BeginTransaction();
 
-        var studentAssignment = _unitOfWork.StudentAssignmentRepository.Add(new StudentAssignment
+        if (studentAssignment is null)
         {
-            UserId = request.UserId,
-            AssignmentId = request.AssignmentId,
-            Status = StudentCourseTaskStatus.NotSubmitted,
-        });
-        await _unitOfWork.SaveChanges(ct);
+            studentAssignment = _unitOfWork.StudentAssignmentRepository.Add(new StudentAssignment
+            {
+                UserId = request.UserId,
+                AssignmentId = request.AssignmentId,
+                Status = StudentCourseTaskStatus.NotSubmitted,
+            });
+            await _unitOfWork.SaveChanges(ct);
+        }
 
         _unitOfWork.StudentAssignmentAttachmentRepository.Add(new StudentAssignmentAttachment
         {

@@ -19,7 +19,7 @@ public class GetUserCoursesQueryHandler : IRequestHandler<GetUserCoursesQuery, I
         var coursesAsTeacher = (await _unitOfWork.TeacherCourseRepository.GetForUser(request.UserId, ct))
             .Select(x => new UserCourseModel
             {
-                Id = x.Id,
+                Id = x.CourseId,
                 Name = x.Course.Name,
                 Description = x.Course.Description,
                 CreatorUserFullName = x.Course.CreatorUser.Fullname,
@@ -31,7 +31,7 @@ public class GetUserCoursesQueryHandler : IRequestHandler<GetUserCoursesQuery, I
         var coursesAsStudent = (await _unitOfWork.StudentCourseRepository.GetForUser(request.UserId, ct))
             .Select(x => new UserCourseModel
             {
-                Id = x.Id,
+                Id = x.CourseId,
                 Name = x.Course.Name,
                 Description = x.Course.Description,
                 CreatorUserFullName = x.Course.CreatorUser.Fullname,

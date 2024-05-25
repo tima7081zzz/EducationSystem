@@ -11,6 +11,7 @@ namespace BlobStorage;
 public interface IBlobStorageManager
 {
     Task<BlobInfo> Upload(BlobFileBase file, CancellationToken ct);
+    Task<bool> Delete(string blobName, CancellationToken ct);
 }
 
 public class BlobStorageManager : IBlobStorageManager
@@ -45,6 +46,12 @@ public class BlobStorageManager : IBlobStorageManager
             BlobName = blobClient.Name,
             Uri = blobClient.Uri,
         };
+    }
+
+    public async Task<bool> Delete(string blobName, CancellationToken ct)
+    {
+        var blobClient = _containerClient.GetBlobClient(blobName);
+        return await blobClient.DeleteIfExistsAsync(cancellationToken: ct);
     }
 
     private static string SanitizeBlobName(string fileName)

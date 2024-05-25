@@ -127,4 +127,20 @@ public class AssignmentController : BaseController
             return NotFound();
         }
     }
+    
+    [HttpDelete("attachment/{attachmentId:int}")]
+    public async Task<IActionResult> DeleteAttachment(int attachmentId, CancellationToken ct)
+    {
+        try
+        {
+            var command = new DeleteStudentAssignmentAttachmentCommand(UserId, attachmentId);
+            await _mediator.Send(command, ct);
+
+            return Ok();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

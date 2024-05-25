@@ -33,4 +33,15 @@ const addAssignment = async (assignment: AddAssignmentRequestModel): Promise<voi
   await axios.post('/api/assignment', assignment);
 };
 
-export { getAssignmentDetails, addAssignment };
+const uploadAttachment = async (assignmentId: number, file: File): Promise<void> => {
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    await axios.post(`/api/assignment/${assignmentId}/upload-attachment`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+
+export { getAssignmentDetails, addAssignment, uploadAttachment };

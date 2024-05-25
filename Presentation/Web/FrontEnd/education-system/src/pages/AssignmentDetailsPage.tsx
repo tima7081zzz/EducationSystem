@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { getAssignmentDetails, AssignmentModel } from '../services/assignmentService';
+import { getAssignmentDetails, uploadAttachment, AssignmentModel } from '../services/assignmentService';
 
 const AssignmentDetailsPage: React.FC = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
@@ -33,14 +33,27 @@ const AssignmentDetailsPage: React.FC = () => {
     setSubmissionText(e.target.value);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
     if (file && file.size > 10 * 1024 * 1024) {
       setError('File size should not exceed 10MB');
       setAttachment(null);
     } else {
       setError(null);
       setAttachment(file || null);
+      
+      // Upload attachment immediately after selection
+      try {
+        await uploadAttachment(Number(assignmentId), file);
+        alert('Attachment uploaded successfully!');
+        setAttachment(null); // Clear the selected file after upload
+      } catch (error) {
+        console.error('Failed to upload attachment:', error);
+        alert('Failed to upload attachment. Please try again later.');
+      }
     }
   };
 
@@ -53,8 +66,9 @@ const AssignmentDetailsPage: React.FC = () => {
       return;
     }
     setError(null);
+    
     // Handle submission logic here
-    console.log('Submitting assignment with text:', submissionText, 'and attachment:', attachment);
+    console.log('Submitting assignment with text:', submissionText);
     handleCloseSubmit();
   };
 

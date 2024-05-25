@@ -6,6 +6,5 @@ public class AddAssignmentRequestModel
     public int? MaxGrade { get; set; }
     public required string Title { get; set; }
     public string? Description { get; set; }
-    public int UserId { get; set; }
     public DateTimeOffset Deadline { get; set; }
 }

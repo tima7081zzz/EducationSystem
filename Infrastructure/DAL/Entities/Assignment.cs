@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using DAL.Constants;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace DAL.Entities;
 public class Assignment
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public Course Course { get; set; } = default!;
     public int CourseId { get; set; }

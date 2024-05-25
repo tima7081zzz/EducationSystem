@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using DAL.Constants;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,7 +8,9 @@ namespace DAL.Entities;
 [Index(nameof(UserId), nameof(AssignmentId), Name = Indexes.StudentAssignmentUserIdAssignmentId, IsUnique = true)]
 public class StudentAssignment
 {
-    [Key] public int Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
     public User User { get; set; } = default!;
     public int UserId { get; set; }
     public Assignment Assignment { get; set; } = default!;

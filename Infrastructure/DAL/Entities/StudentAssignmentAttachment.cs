@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Entities;
 
 public class StudentAssignmentAttachment
 {
-    [Key] public int Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
     public int StudentAssignmentId { get; set; }
     public StudentAssignment StudentAssignment { get; set; } = default!;
     public User StudentUser { get; set; } = default!;

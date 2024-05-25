@@ -66,6 +66,13 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost("logout")]
+    public async Task<IActionResult> LogOut()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return Ok();
+    }
+
     private async Task Authenticate(UserDto user)
     {
         var claims = new List<Claim>

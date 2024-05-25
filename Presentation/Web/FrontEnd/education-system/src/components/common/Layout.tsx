@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemText, CssBaseline, Box } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemText, CssBaseline, Box, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
+import { logout } from '../../services/authService';
 
 const drawerWidth = 240;
 
@@ -10,6 +11,17 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.href = '/login';
+      
+    } catch (error) {
+      console.error('Failed to logout:', error);
+      alert('Failed to logout. Please try again later.');
+    }
   };
 
   return (
@@ -23,6 +35,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Typography variant="h6" noWrap>
             MyClass
           </Typography>
+          <Box sx={{ flexGrow: 1 }} /> {/* Push the logout button to the right */}
+          <Button color="inherit" onClick={handleLogout}>Logout</Button> {/* Logout button */}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -41,7 +55,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            <ListItem button component={Link} to="/">
+            <ListItem button component={Link} to="/home">
               <ListItemText primary="Home" />
             </ListItem>
             {/* Add more menu items as needed */}

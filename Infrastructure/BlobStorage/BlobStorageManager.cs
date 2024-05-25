@@ -17,12 +17,11 @@ public class BlobStorageManager : IBlobStorageManager
 {
     private readonly BlobContainerClient _containerClient;
 
-    public BlobStorageManager(BlobContainerType containerType, IOptionsSnapshot<BlobOptions> blobOptions)
+    public BlobStorageManager(IOptionsSnapshot<BlobOptions> blobOptions)
     {
-        var containerName = EnumUtils.GetEnumValueDescription(containerType);
-
-        var blobServiceClient = new BlobServiceClient(new Uri(blobOptions.Value.BlobConnectionString));
-        _containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+        var blobServiceClient = new BlobServiceClient(blobOptions.Value.BlobConnectionString);
+        _containerClient =
+            blobServiceClient.GetBlobContainerClient(blobOptions.Value.StudentAssignmentAttachmentsContainerName);
     }
 
     public async Task<BlobInfo> Upload(BlobFileBase file, CancellationToken ct)

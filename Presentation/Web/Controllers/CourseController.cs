@@ -49,11 +49,18 @@ public class CourseController : BaseController
     [HttpPost]
     public async Task<IActionResult> Add(AddCourseRequestModel requestModel)
     {
-        var command = new AddCourseCommand(requestModel.Name, requestModel.Description, requestModel.Category, UserId);
+        try
+        {
+            var command = new AddCourseCommand(requestModel.Name, requestModel.Description, requestModel.Category, UserId);
         
-        var courseId = await _mediator.Send(command);
+            var courseId = await _mediator.Send(command);
         
-        return Ok(courseId);
+            return Ok(courseId);
+        }
+        catch (WrongOperationException e)
+        {
+            return BadRequest("name can not be empty");
+        }
     }
     
     [HttpPost("{publicId}/join")]

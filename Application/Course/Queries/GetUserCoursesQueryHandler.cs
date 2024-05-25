@@ -20,12 +20,11 @@ public class GetUserCoursesQueryHandler : IRequestHandler<GetUserCoursesQuery, I
             .Select(x => new UserCourseModel
             {
                 Id = x.Id,
-                Name = x.Name,
-                Description = x.Description,
-                Category = x.Category,
-                CreatorUserFullName = x.CreatorUserFullName,
-                CreatedAt = x.CreatedAt,
-                IsCreator = x.CreatorUserId == request.UserId,
+                Name = x.Course.Name,
+                Description = x.Course.Description,
+                CreatorUserFullName = x.Course.CreatorUser.Fullname,
+                IsCreator = x.Course.CreatorUserId == request.UserId,
+                CreatedAt = x.Course.CreatedAt,
                 IsTeacher = true
             });
         
@@ -33,11 +32,10 @@ public class GetUserCoursesQueryHandler : IRequestHandler<GetUserCoursesQuery, I
             .Select(x => new UserCourseModel
             {
                 Id = x.Id,
-                Name = x.Name,
-                Description = x.Description,
-                Category = x.Category,
-                CreatorUserFullName = x.CreatorUserFullName,
-                CreatedAt = x.CreatedAt,
+                Name = x.Course.Name,
+                Description = x.Course.Description,
+                CreatorUserFullName = x.Course.CreatorUser.Fullname,
+                CreatedAt = x.Course.CreatedAt,
                 IsCreator = false,
                 IsTeacher = false
             });
@@ -56,7 +54,6 @@ public class UserCourseModel
     public int Id { get; set; }
     public required string Name { get; set; }
     public string? Description { get; set; }
-    public string? Category { get; set; }
     public required string CreatorUserFullName { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public bool IsCreator { get; set; }

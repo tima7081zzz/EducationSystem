@@ -1,4 +1,5 @@
-﻿using DAL;
+﻿using Core.Exceptions;
+using DAL;
 using DAL.Entities;
 using MediatR;
 
@@ -18,6 +19,11 @@ public class AddCourseCommandHandler : IRequestHandler<AddCourseCommand, int>
     public async Task<int> Handle(AddCourseCommand request, CancellationToken ct)
     {
         var (name, description, category, userId) = request;
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new WrongOperationException(); //todo change exception
+        }
         
         await using var transaction = _unitOfWork.BeginTransaction();
         
@@ -30,6 +36,8 @@ public class AddCourseCommandHandler : IRequestHandler<AddCourseCommand, int>
             CreatedAt = DateTimeOffset.UtcNow,
             PublicId = CoursePublicIdGenerator.Generate()
         });
+        
+        await _unitOfWork.SaveChanges(ct);
 
         _unitOfWork.TeacherCourseRepository.Add(new TeacherCourse
         {

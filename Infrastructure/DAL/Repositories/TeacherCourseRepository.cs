@@ -5,20 +5,12 @@ namespace DAL.Repositories;
 
 public class TeacherCourseRepository(DbSet<TeacherCourse> entities) : GenericRepository<TeacherCourse, int>(entities)
 {
-    public async Task<List<UserCourseDto>> GetForUser(int userId, CancellationToken ct)
+    public async Task<List<TeacherCourse>> GetForUser(int userId, CancellationToken ct)
     {
         return await Entities
             .Where(x => x.UserId == userId)
-            .Select(x => new UserCourseDto
-            {
-                Id = x.CourseId,
-                Name = x.Course.Name,
-                Description = x.Course.Description,
-                Category = x.Course.Category,
-                CreatorUserFullName = x.Course.CreatorUser.Fullname,
-                CreatorUserId = x.Course.CreatorUserId,
-                CreatedAt = x.Course.CreatedAt,
-            })
+            .Include(x => x.Course)
+            .Include(x => x.Course.CreatorUser)
             .ToListAsync(ct);
     }
 }

@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers;
 
-public class BaseController : Controller
+public class BaseController : ControllerBase
 {
     internal int UserId
     {
         get
         {
-            if (User.Identity!.IsAuthenticated)
+            if (!User.Identity!.IsAuthenticated)
             {
                 throw new Exception("Not authenticated"); //todo: change to custom exception
             }

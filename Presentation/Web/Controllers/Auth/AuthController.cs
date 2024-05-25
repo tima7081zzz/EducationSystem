@@ -8,7 +8,9 @@ using Web.Models.ViewModels;
 
 namespace Web.Controllers.Auth;
 
-public class AuthController : BaseController
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
 {
     private readonly ILoginService _loginService;
 
@@ -17,24 +19,17 @@ public class AuthController : BaseController
         _loginService = loginService;
     }
 
-    [HttpGet]
-    public IActionResult Login()
-    {
-        return View("Login");
-    }
-
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginUserDto loginUserModel, CancellationToken ct)
-    {
-        var user = await _loginService.LoginUser(loginUserModel, ct);
+    { var user = await _loginService.LoginUser(loginUserModel, ct);
         if (user is null)
         {
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "Auth");
         }
 
         await Authenticate(user);
 
-        return Redirect(loginUserModel.ReturnUrl);
+        return Ok();
     }
     
     [HttpPost("register")]
@@ -42,7 +37,7 @@ public class AuthController : BaseController
     {
         if (!ModelState.IsValid)
         {
-            return View(viewModel);
+            return BadRequest(viewModel);
         }
 
         var user = await _loginService.RegisterUser(new RegisterUserDto
@@ -54,7 +49,7 @@ public class AuthController : BaseController
 
         if (user is null)
         {
-            return View(viewModel);
+            return BadRequest(viewModel);
         }
 
         await Authenticate(user);
@@ -64,11 +59,8 @@ public class AuthController : BaseController
 
     private async Task Authenticate(UserDto user)
     {
-        //var userRole = UserRoles.ResolveByEnumValue(user.RoleType);
-
         var claims = new List<Claim>
         {
-            //new(ClaimsIdentity.DefaultRoleClaimType, userRole),
             new(ClaimsIdentity.DefaultNameClaimType, user.Email),
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
         };

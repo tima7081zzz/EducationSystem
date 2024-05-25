@@ -1,26 +1,40 @@
-import React, { useState } from 'react';
-import { Container, Typography, Grid, Paper, Box, Button, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, Grid, Paper, Box, Button, TextField, CircularProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { getAssignmentDetails, AssignmentModel } from '../services/assignmentService';
 
-const AssignmentPage: React.FC = () => {
+const AssignmentDetailsPage: React.FC = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
-  const isTeacher = false; // This should be derived from your actual data
+  const [assignment, setAssignment] = useState<AssignmentModel | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [submissionText, setSubmissionText] = useState<string>('');
+  const [attachment, setAttachment] = useState<File | null>(null);
+  const [isSubmitOpen, setIsSubmitOpen] = useState<boolean>(false);
 
-  const assignment = {
-    id: assignmentId,
-    title: 'Sample Assignment',
-    description: 'This is a sample assignment description.',
-    creationDate: '2024-01-01',
-    deadlineDate: '2024-01-10',
-    maxGrade: 100,
+  useEffect(() => {
+    const fetchAssignmentDetails = async () => {
+      try {
+        if (assignmentId) {
+          const data = await getAssignmentDetails(Number(assignmentId));
+          setAssignment(data);
+        }
+      } catch (err) {
+        setError('Failed to fetch assignment details.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAssignmentDetails();
+  }, [assignmentId]);
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSubmissionText(e.target.value);
   };
 
-  const [attachment, setAttachment] = useState<File | null>(null);
-  const [submissionText, setSubmissionText] = useState('');
-  const [error, setError] = useState<string | null>(null);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file && file.size > 10 * 1024 * 1024) {
       setError('File size should not exceed 10MB');
       setAttachment(null);
@@ -30,7 +44,10 @@ const AssignmentPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleOpenSubmit = () => setIsSubmitOpen(true);
+  const handleCloseSubmit = () => setIsSubmitOpen(false);
+
+  const handleSubmit = async () => {
     if (submissionText.length > 300) {
       setError('Submission text should not exceed 300 characters');
       return;
@@ -38,7 +55,20 @@ const AssignmentPage: React.FC = () => {
     setError(null);
     // Handle submission logic here
     console.log('Submitting assignment with text:', submissionText, 'and attachment:', attachment);
+    handleCloseSubmit();
   };
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
+
+  if (!assignment) {
+    return <Typography>Assignment not found.</Typography>;
+  }
 
   return (
     <Container>
@@ -55,10 +85,10 @@ const AssignmentPage: React.FC = () => {
             </Box>
             <Box>
               <Typography variant="body2" color="textSecondary" gutterBottom>
-                Created on: {assignment.creationDate}
+                Created on: {new Date(assignment.createdAt).toLocaleDateString()}
               </Typography>
               <Typography variant="body2" color="textSecondary" gutterBottom>
-                Deadline: {assignment.deadlineDate}
+                Deadline: {new Date(assignment.deadline).toLocaleDateString()}
               </Typography>
               {assignment.maxGrade && (
                 <Typography variant="body2" color="textSecondary" gutterBottom>
@@ -67,44 +97,42 @@ const AssignmentPage: React.FC = () => {
               )}
             </Box>
           </Grid>
-          {!isTeacher && (
-            <Grid item xs={12} md={4}>
-              <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Button
-                  variant="contained"
-                  component="label"
-                >
-                  Upload Attachment
-                  <input
-                    type="file"
-                    hidden
-                    onChange={handleFileChange}
-                  />
-                </Button>
-                {attachment && <Typography variant="body2">{attachment.name}</Typography>}
-                <TextField
-                  label="Submission Text"
-                  multiline
-                  rows={4}
-                  value={submissionText}
-                  onChange={(e) => setSubmissionText(e.target.value)}
-                  inputProps={{ maxLength: 300 }}
+          <Grid item xs={12} md={4}>
+            <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Button
+                variant="contained"
+                component="label"
+              >
+                Upload Attachment
+                <input
+                  type="file"
+                  hidden
+                  onChange={handleFileChange}
                 />
-                {error && <Typography color="error">{error}</Typography>}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </Button>
-              </Box>
-            </Grid>
-          )}
+              </Button>
+              {attachment && <Typography variant="body2">{attachment.name}</Typography>}
+              <TextField
+                label="Submission Text"
+                multiline
+                rows={4}
+                value={submissionText}
+                onChange={handleTextChange}
+                inputProps={{ maxLength: 300 }}
+              />
+              {error && <Typography color="error">{error}</Typography>}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </Box>
+          </Grid>
         </Grid>
       </Paper>
     </Container>
   );
 };
 
-export default AssignmentPage;
+export default AssignmentDetailsPage;

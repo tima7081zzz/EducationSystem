@@ -1,20 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CourseDetailsPage from './pages/CourseDetailsPage';
-import AssignmentDetailsPage from './pages/AssignmentDetailsPage';
+import AssignmentPage from './pages/AssignmentDetailsPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import Layout from './components/Layout';
 
 const App: React.FC = () => {
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/course/:id" element={<CourseDetailsPage />} />
-          <Route path="/course/:courseId/assignment/:assignmentId" element={<AssignmentDetailsPage />} />
-        </Routes>
-      </Layout>
+      <Layout children={undefined} />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/course/:courseId" element={<CourseDetailsPage />} />
+        <Route path="/course/:courseId/assignment/:assignmentId" element={<AssignmentPage />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
     </Router>
   );
 };

@@ -13,7 +13,7 @@ const CourseGrid: React.FC = () => {
     <Grid container spacing={3}>
       {courses.map(course => (
         <Grid item xs={12} sm={6} md={4} key={course.id}>
-          <CourseCard id={course.id} title={course.title} description={course.description} />
+          
         </Grid>
       ))}
     </Grid>

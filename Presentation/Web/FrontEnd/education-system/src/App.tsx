@@ -5,7 +5,7 @@ import CourseDetailsPage from './pages/CourseDetailsPage';
 import AssignmentPage from './pages/AssignmentDetailsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import Layout from './components/Layout';
+import Layout from './components/common/Layout';
 
 const App: React.FC = () => {
   return (

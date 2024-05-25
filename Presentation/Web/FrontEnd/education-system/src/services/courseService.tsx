@@ -24,6 +24,22 @@ export interface CreateCourseResponseModel {
   id: number;
 }
 
+export interface CourseAssignmentModel {
+  id: number;
+  title: string;
+  createdAt: string;
+}
+
+export interface CourseModel {
+  id: number;
+  publicId: string;
+  name: string;
+  description?: string;
+  category?: string;
+  isTeacher: boolean;
+  assignments: CourseAssignmentModel[];
+}
+
 const getUserCourses = async (): Promise<GetUserCoursesResponseModel> => {
   const response = await axios.get<GetUserCoursesResponseModel>('/api/course/user-courses');
   return response.data;
@@ -34,4 +50,9 @@ const createCourse = async (course: CreateCourseRequestModel): Promise<CreateCou
   return response.data;
 };
 
-export { getUserCourses, createCourse };
+const getCourseDetails = async (courseId: number): Promise<CourseModel> => {
+  const response = await axios.get<CourseModel>(`/api/course/${courseId}`);
+  return response.data;
+};
+
+export { getUserCourses, createCourse, getCourseDetails };

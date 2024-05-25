@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Grid, Paper, Box, Button, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { useParams } from 'react-router-dom';
-
-interface Assignment {
-  id: number;
-  title: string;
-  creationDate: string;
-}
+import { getCourseDetails, CourseModel } from '../services/courseService';
 
 const colors = [
   '#FFCDD2', // light red
@@ -18,29 +13,49 @@ const colors = [
 
 const CourseDetailsPage: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  const isTeacher = true; // This should be derived from your actual data
   const [headerColor, setHeaderColor] = useState<string>('');
+  const [course, setCourse] = useState<CourseModel | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
     setHeaderColor(randomColor);
-  }, []);
 
-  const course = {
-    id: courseId,
-    name: 'Sample Course',
-    description: 'This is a sample course description.',
-    publicId: '12345-ABCDE',
-    assignments: [
-      { id: 1, title: 'Assignment 1', creationDate: '2024-01-01' },
-      { id: 2, title: 'Assignment 2', creationDate: '2024-02-01' },
-    ],
-  };
+    const fetchCourseDetails = async () => {
+      try {
+        if (courseId) {
+          const data = await getCourseDetails(Number(courseId));
+          setCourse(data);
+        }
+      } catch (err) {
+        setError('Failed to fetch course details.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCourseDetails();
+  }, [courseId]);
 
   const handleCopyPublicId = () => {
-    navigator.clipboard.writeText(course.publicId);
-    alert('Course ID copied to clipboard');
+    if (course?.publicId) {
+      navigator.clipboard.writeText(course.publicId);
+      alert('Course ID copied to clipboard');
+    }
   };
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
+
+  if (!course) {
+    return <Typography>Course not found.</Typography>;
+  }
 
   return (
     <Container>
@@ -63,7 +78,7 @@ const CourseDetailsPage: React.FC = () => {
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={3}>
-          {isTeacher && (
+          {course.isTeacher && (
             <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
               <Typography variant="subtitle1" gutterBottom>
                 Course Public ID
@@ -86,7 +101,7 @@ const CourseDetailsPage: React.FC = () => {
               {course.assignments.map((assignment) => (
                 <div key={assignment.id}>
                   <ListItem button component="a" href={`/course/${course.id}/assignment/${assignment.id}`}>
-                    <ListItemText primary={assignment.title} secondary={`Created on: ${assignment.creationDate}`} />
+                    <ListItemText primary={assignment.title} secondary={`Created on: ${new Date(assignment.createdAt).toLocaleDateString()}`} />
                   </ListItem>
                   <Divider />
                 </div>

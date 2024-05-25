@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Course.Queries;
 
-public record GetCourseQuery(int Id, int UserId) : IRequest<CourseModel>;
+public record GetCourseQuery(int UserId, int Id) : IRequest<CourseModel>;
 
 public class GetCourseQueryHandler : IRequestHandler<GetCourseQuery, CourseModel>
 {

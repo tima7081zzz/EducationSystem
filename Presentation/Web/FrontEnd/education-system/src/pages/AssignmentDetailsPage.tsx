@@ -11,7 +11,6 @@ const AssignmentDetailsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [submissionText, setSubmissionText] = useState<string>('');
   const [attachment, setAttachment] = useState<File | null>(null);
-  const [isSubmitOpen, setIsSubmitOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchAssignmentDetails = async () => {
@@ -60,9 +59,6 @@ const AssignmentDetailsPage: React.FC = () => {
     }
   };
 
-  const handleOpenSubmit = () => setIsSubmitOpen(true);
-  const handleCloseSubmit = () => setIsSubmitOpen(false);
-
   const handleSubmit = async () => {
     if (submissionText.length > 300) {
       setError('Submission text should not exceed 300 characters');
@@ -71,7 +67,6 @@ const AssignmentDetailsPage: React.FC = () => {
     setError(null);
     // Handle submission logic here
     console.log('Submitting assignment with text:', submissionText, 'and attachment:', attachment);
-    handleCloseSubmit();
   };
 
   if (isLoading) {
@@ -88,9 +83,10 @@ const AssignmentDetailsPage: React.FC = () => {
 
   return (
     <Container>
-      <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <Grid container spacing={3}>
+        {/* Left Section: Assignment Details */}
+        <Grid item xs={12} md={8}>
+          <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
             <Box>
               <Typography variant="h5" component="h1" gutterBottom>
                 {assignment.title}
@@ -98,8 +94,6 @@ const AssignmentDetailsPage: React.FC = () => {
               <Typography variant="body1" component="p" gutterBottom>
                 {assignment.description}
               </Typography>
-            </Box>
-            <Box>
               <Typography variant="body2" color="textSecondary" gutterBottom>
                 Created on: {new Date(assignment.createdAt).toLocaleDateString()}
               </Typography>
@@ -112,11 +106,14 @@ const AssignmentDetailsPage: React.FC = () => {
                 </Typography>
               )}
             </Box>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Box>
-              <Typography gutterBottom>
-                My Attachments
+          </Paper>
+        </Grid>
+
+        {/* Right Section: Attachments and Submissions */}
+        <Grid item xs={12} md={4}>
+          <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
+              <Typography variant="h6" gutterBottom>
+                Attachments
               </Typography>
               <List>
                 {assignment.attachments.map((attachment) => (
@@ -128,7 +125,6 @@ const AssignmentDetailsPage: React.FC = () => {
                   </ListItem>
                 ))}
               </List>
-            </Box>
             <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <Button
                 variant="contained"
@@ -159,9 +155,9 @@ const AssignmentDetailsPage: React.FC = () => {
                 Submit
               </Button>
             </Box>
-          </Grid>
+          </Paper>
         </Grid>
-      </Paper>
+      </Grid>
     </Container>
   );
 };

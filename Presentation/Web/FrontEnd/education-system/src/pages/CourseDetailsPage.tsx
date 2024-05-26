@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Fab } from '@mui/material';
+import { Container, Typography, Grid, Fab, AppBar, Tabs, Tab, Box, List, ListItem, ListItemText, Paper, CircularProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import CourseHeader from '../components/course/CourseHeader';
 import CoursePublicId from '../components/course/CoursePublicId';
 import AssignmentList from '../components/course/AssignmentList';
 import AddAssignmentModal from '../components/course/AddAssignmentModal';
 import AddIcon from '@mui/icons-material/Add';
-import { getCourseDetails, CourseModel } from '../services/courseService';
+import { getCourseDetails, CourseModel, getCourseUsers, CourseUsersModel } from '../services/courseService';
 import { addAssignment, AddAssignmentRequestModel } from '../services/assignmentService';
 
 const colors = [
@@ -24,6 +24,10 @@ const CourseDetailsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const [currentTab, setCurrentTab] = useState<number>(0); // State to manage current tab index
+  const [courseUsers, setCourseUsers] = useState<CourseUsersModel | null>(null);
+  const [isUsersLoading, setIsUsersLoading] = useState<boolean>(false);
+  const [usersError, setUsersError] = useState<string | null>(null);
 
   useEffect(() => {
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -67,6 +71,31 @@ const CourseDetailsPage: React.FC = () => {
     }
   };
 
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
+    setCurrentTab(newValue);
+  };
+
+  useEffect(() => {
+    if (currentTab === 1 && !courseUsers) {
+      const fetchCourseUsers = async () => {
+        setIsUsersLoading(true);
+        setUsersError(null);
+        try {
+          if (courseId) {
+            const users = await getCourseUsers(Number(courseId));
+            setCourseUsers(users);
+          }
+        } catch (err) {
+          setUsersError('Failed to fetch course users.');
+        } finally {
+          setIsUsersLoading(false);
+        }
+      };
+
+      fetchCourseUsers();
+    }
+  }, [currentTab, courseId, courseUsers]);
+
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
@@ -82,19 +111,57 @@ const CourseDetailsPage: React.FC = () => {
   return (
     <Container>
       <CourseHeader name={course.name} description={course.description} headerColor={headerColor} />
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={3}>
-          {course.isTeacher && (
-            <CoursePublicId publicId={course.publicId} handleCopyPublicId={handleCopyPublicId} />
-          )}
+      <AppBar position="static" color="default" elevation={0}>
+        <Tabs value={currentTab} onChange={handleChangeTab} indicatorColor="primary" textColor="primary">
+          <Tab label="Feed" />
+          <Tab label="Users" />
+        </Tabs>
+      </AppBar>
+      <Box hidden={currentTab !== 0}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={3}>
+            {course.isTeacher && (
+              <CoursePublicId publicId={course.publicId} handleCopyPublicId={handleCopyPublicId} />
+            )}
+          </Grid>
+          <Grid item xs={12} md={9}>
+            <AssignmentList courseId={course.id.toString()} assignments={course.assignments.map((a) => ({
+              ...a,
+              creationDate: new Date(a.createdAt).toLocaleDateString(),
+            }))} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={9}>
-          <AssignmentList courseId={course.id.toString()} assignments={course.assignments.map((a) => ({
-            ...a,
-            creationDate: new Date(a.createdAt).toLocaleDateString(),
-          }))} />
-        </Grid>
-      </Grid>
+      </Box>
+      <Box hidden={currentTab !== 1}>
+        {isUsersLoading ? (
+          <CircularProgress />
+        ) : usersError ? (
+          <Typography color="error">{usersError}</Typography>
+        ) : courseUsers ? (
+          <Box>
+            <Typography variant="h5" gutterBottom>Teachers</Typography>
+            <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
+              <List>
+                {courseUsers.teachers.map((teacher, index) => (
+                  <ListItem key={index}>
+                    <ListItemText primary={teacher.fullname} />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+            <Typography variant="h5" gutterBottom>Students</Typography>
+            <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
+              <List>
+                {courseUsers.students.map((student, index) => (
+                  <ListItem key={index}>
+                    <ListItemText primary={student.fullname} />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          </Box>
+        ) : null}
+      </Box>
       {course.isTeacher && (
         <>
           <Fab color="primary" aria-label="add" onClick={handleOpen} sx={{ position: 'fixed', bottom: 16, right: 16 }}>

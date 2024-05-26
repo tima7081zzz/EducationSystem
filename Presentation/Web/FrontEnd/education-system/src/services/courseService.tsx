@@ -40,6 +40,15 @@ export interface CourseModel {
   assignments: CourseAssignmentModel[];
 }
 
+export interface CourseUsersModel {
+  teachers: CourseUserModel[];
+  students: CourseUserModel[];
+}
+
+export interface CourseUserModel {
+  fullname: string;
+}
+
 const getUserCourses = async (): Promise<GetUserCoursesResponseModel> => {
   const response = await axios.get<GetUserCoursesResponseModel>('/api/course/user-courses');
   return response.data;
@@ -59,4 +68,9 @@ const joinCourse = async (publicId: string): Promise<void> => {
   await axios.post(`/api/course/${publicId}/join`);
 };
 
-export { getUserCourses, createCourse, getCourseDetails, joinCourse };
+const getCourseUsers = async (courseId: number): Promise<CourseUsersModel> => {
+  const response = await axios.get<CourseUsersModel>(`/api/course/${courseId}/users`);
+  return response.data;
+};
+
+export { getUserCourses, createCourse, getCourseDetails, joinCourse, getCourseUsers };

@@ -97,7 +97,7 @@ public class AssignmentController : BaseController
     {
         try
         {
-            var command = new SubmitAssignmentCommand(UserId, id, model?.Comment);
+            var command = new SubmitAssignmentCommand(UserId, id, model.Comment);
             await _mediator.Send(command, ct);
 
             return Ok();

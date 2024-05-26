@@ -25,13 +25,13 @@ public class DataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>(x =>
+        modelBuilder.Entity<User>(u =>
         {
-            x.HasMany(x => x.Courses).WithOne(x => x.CreatorUser).OnDelete(DeleteBehavior.NoAction);
-            x.HasMany(x => x.StudentCourses).WithOne(x => x.User).OnDelete(DeleteBehavior.NoAction);
-            x.HasMany(x => x.TeacherCourses).WithOne(x => x.User).OnDelete(DeleteBehavior.NoAction);
-            x.HasMany(x => x.Assignments).WithOne(x => x.CreatorTeacher).OnDelete(DeleteBehavior.NoAction);
-            x.HasMany(x => x.StudentAssignmentAttachments).WithOne(x => x.StudentUser).OnDelete(DeleteBehavior.NoAction);
+            u.HasMany(x => x.Courses).WithOne(y => y.CreatorUser).OnDelete(DeleteBehavior.NoAction);
+            u.HasMany(x => x.StudentCourses).WithOne(y => y.User).OnDelete(DeleteBehavior.NoAction);
+            u.HasMany(x => x.TeacherCourses).WithOne(y => y.User).OnDelete(DeleteBehavior.NoAction);
+            u.HasMany(x => x.Assignments).WithOne(y => y.CreatorTeacher).OnDelete(DeleteBehavior.NoAction);
+            u.HasMany(x => x.StudentAssignmentAttachments).WithOne(y => y.StudentUser).OnDelete(DeleteBehavior.NoAction);
         });
     }
 }

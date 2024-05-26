@@ -57,7 +57,7 @@ public class CourseController : BaseController
         
             return Ok(courseId);
         }
-        catch (WrongOperationException e)
+        catch (WrongOperationException)
         {
             return BadRequest("name can not be empty");
         }

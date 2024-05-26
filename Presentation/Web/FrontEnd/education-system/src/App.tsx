@@ -6,6 +6,7 @@ import AssignmentPage from './pages/AssignmentDetailsPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Layout from './components/common/Layout';
+import AssignmentOverviewPage from './pages/AssignmentOverviewPage';
 
 const App: React.FC = () => {
   return (
@@ -17,7 +18,8 @@ const App: React.FC = () => {
         <Route path="/home" element={<HomePage />} />
         <Route path="/course/:courseId" element={<CourseDetailsPage />} />
         <Route path="/course/:courseId/assignment/:assignmentId" element={<AssignmentPage />} />
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/course/:courseId/assignment/:assignmentId/overview" element={<AssignmentOverviewPage/>} />
+        <Route path="/" element={<Navigate to="/home" />} />
       </Routes>
     </Router>
   );

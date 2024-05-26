@@ -18,6 +18,13 @@ public class StudentAssignmentRepository(DbSet<StudentAssignment> entities) : Ge
             .Include(x => x.StudentAssignmentAttachments)
             .FirstOrDefaultAsync(x => x.UserId == userId && x.AssignmentId == assignmentId, ct);
     }
+    
+    public async Task<StudentAssignment?> GetWithAttachments(int userId, int assignmentId, CancellationToken ct)
+    {
+        return await Entities
+            .Include(x => x.StudentAssignmentAttachments)
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.AssignmentId == assignmentId, ct);
+    }
 
     public async Task<List<StudentAssignment>> GetByAssignment(int assignmentId, CancellationToken ct)
     {

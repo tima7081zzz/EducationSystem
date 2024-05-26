@@ -178,4 +178,22 @@ public class AssignmentController : BaseController
             return NotFound();
         }
     }
+    
+    [HttpGet("{id:int}/student-user/{studentUserId:int}/teacher-preview")]
+    public async Task<IActionResult> TeacherPreview(int id, int studentUserId, CancellationToken ct)
+    {
+        try
+        {
+            var preview = await _mediator.Send(new GetAssignmentTeacherPreviewQuery(UserId, studentUserId, id), ct);
+            return Ok(preview);
+        }
+        catch (WrongOperationException)
+        {
+            return Forbid();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

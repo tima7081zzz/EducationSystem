@@ -11,4 +11,12 @@ public class AssignmentRepository(DbSet<Assignment> entities) : GenericRepositor
             .Where(x => x.CourseId == courseId)
             .ToListAsync(cancellationToken: ct);
     }
+    
+    public async Task<bool> IsTeacherForAssignment(int teacherUserId, int id, CancellationToken ct)
+    {
+        return await Entities
+            .Where(x => x.Id == id)
+            .Where(x => x.Course.TeacherCourses.Any(y => y.UserId == teacherUserId))
+            .AnyAsync(ct);
+    }
 }

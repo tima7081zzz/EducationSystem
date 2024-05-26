@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Fab, AppBar, Tabs, Tab, Box, List, ListItem, ListItemText, Paper, CircularProgress } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import {
+  Container,
+  Typography,
+  Grid,
+  Fab,
+  AppBar,
+  Tabs,
+  Tab,
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  CircularProgress
+} from '@mui/material';
+import { useParams, Link } from 'react-router-dom';
 import CourseHeader from '../components/course/CourseHeader';
 import CoursePublicId from '../components/course/CoursePublicId';
 import AssignmentList from '../components/course/AssignmentList';
@@ -125,10 +139,14 @@ const CourseDetailsPage: React.FC = () => {
             )}
           </Grid>
           <Grid item xs={12} md={9}>
-            <AssignmentList courseId={course.id.toString()} assignments={course.assignments.map((a) => ({
-              ...a,
-              creationDate: new Date(a.createdAt).toLocaleDateString(),
-            }))} />
+            <AssignmentList
+              courseId={course.id.toString()}
+              assignments={course.assignments.map((a) => ({
+                ...a,
+                creationDate: new Date(a.createdAt).toLocaleDateString(),
+              }))}
+              isTeacher={course.isTeacher}
+            />
           </Grid>
         </Grid>
       </Box>

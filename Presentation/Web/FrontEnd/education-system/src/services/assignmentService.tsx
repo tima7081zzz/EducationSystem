@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../axiosConfig';
 
 export interface AddAssignmentRequestModel {
   courseId: number;
@@ -30,6 +30,27 @@ export enum StudentCourseTaskStatus {
     SubmittedLate = 1,
     SubmittedInTime = 2,
   }
+
+  export interface StudentAssignmentOverviewModel {
+    userId: number;
+    userFullname: string;
+    grade: number | null;
+  }
+  
+  export interface GetAssignmentOverviewModel {
+    id: number;
+    title: string;
+    submittedCount: number;
+    notSubmittedCount: number;
+    gradedCount: number;
+    maxGrade: number | null;
+    studentAssignmentInfos: StudentAssignmentOverviewModel[];
+  }
+  
+  export const getAssignmentOverview = async (assignmentId: number): Promise<GetAssignmentOverviewModel> => {
+    const response = await axios.get<GetAssignmentOverviewModel>(`/api/assignment/${assignmentId}/overview`);
+    return response.data;
+  };
 
 const getAssignmentDetails = async (assignmentId: number): Promise<AssignmentModel> => {
   const response = await axios.get<AssignmentModel>(`/api/assignment/${assignmentId}`);
@@ -63,4 +84,8 @@ const deleteAttachment = async (attachmentId: number): Promise<void> => {
     await axios.delete(`/api/assignment/attachment/${attachmentId}`);
  };
 
-export { getAssignmentDetails, addAssignment, uploadAttachment, submitAssignment, unsubmitAssignment, deleteAttachment };
+const gradeAssignment = async (assignmentId: number): Promise<void> => {
+  await axios.delete(`/api/assignment/${assignmentId}/grade`);
+};
+
+export { getAssignmentDetails, addAssignment, uploadAttachment, submitAssignment, unsubmitAssignment, deleteAttachment, gradeAssignment };

@@ -10,9 +10,10 @@ interface Assignment {
 interface AssignmentListProps {
   courseId: string;
   assignments: Assignment[];
+  isTeacher: boolean;
 }
 
-const AssignmentList: React.FC<AssignmentListProps> = ({ courseId, assignments }) => {
+const AssignmentList: React.FC<AssignmentListProps> = ({ courseId, assignments, isTeacher }) => {
   return (
     <Paper elevation={3} sx={{ padding: '16px' }}>
       <Typography variant="h6" gutterBottom>
@@ -21,7 +22,7 @@ const AssignmentList: React.FC<AssignmentListProps> = ({ courseId, assignments }
       <List>
         {assignments.map((assignment) => (
           <div key={assignment.id}>
-            <ListItem button component="a" href={`/course/${courseId}/assignment/${assignment.id}`}>
+            <ListItem button component="a" href={isTeacher ? `/course/${courseId}/assignment/${assignment.id}/overview` : `/course/${courseId}/assignment/${assignment.id}`}>
               <ListItemText primary={assignment.title} secondary={`Created on: ${assignment.creationDate}`} />
             </ListItem>
             <Divider />

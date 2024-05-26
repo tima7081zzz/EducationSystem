@@ -104,22 +104,35 @@ const AssignmentOverviewPage: React.FC = () => {
             <Typography variant="h5" gutterBottom>
               Student Assignments
             </Typography>
+            <Typography variant="body2" gutterBottom>
+              Max grade: {overview.maxGrade ?? 'No max grade'}
+            </Typography>
             <List>
               {overview.studentAssignmentInfos.map((student) => (
                 <ListItem key={student.userId} sx={{ display: 'flex', alignItems: 'center' }}>
                   <ListItemText primary={student.userFullname} sx={{ flex: 1 }} />
-                  <TextField
-                    type="number"
-                    value={student.grade ?? ''}
-                    onChange={(e) => handleGradeChange(student.userId, e.target.value)}
-                    sx={{ maxWidth: 80, mr: 2 }}
-                    size="small"
-                  />
-                  <Typography variant="body2" sx={{ mr: 2 }}>
-                    {student.grade ?? 'Not graded'} / {overview.maxGrade}
-                  </Typography>
-                  <Button variant="contained" color="primary" onClick={() => handleOpenDialog(student)}>
-                    Grade
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <TextField
+                      type="number"
+                      value={student.grade ?? ''}
+                      onChange={(e) => handleGradeChange(student.userId, e.target.value)}
+                      sx={{ maxWidth: 80, mr: 0.5 }}
+                      size="small"
+                      InputProps={{
+                        type: "number",
+                 sx: {
+                    '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                        display: 'none'
+                     },
+                     '& input[type=number]': {
+                        MozAppearance: 'textfield'
+                      },
+                    }
+                    }}  
+                    />
+                  </Box>
+                  <Button variant="contained" size="small" color="primary" onClick={() => handleOpenDialog(student)}>
+                    &#x2714; {/* Unicode for check mark symbol */}
                   </Button>
                 </ListItem>
               ))}
@@ -127,27 +140,25 @@ const AssignmentOverviewPage: React.FC = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} md={8}>              
-          <Paper elevation={3} sx={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box>
-            <Typography variant="h5" gutterBottom >
+          <Paper elevation={3} sx={{ padding: '16px', display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="h5" gutterBottom>
               {overview.title}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', width: '100%' }}>
-              <Box sx={{ textAlign: 'center' }}>
+              <Box sx={{ textAlign: 'center', px: 1 }}>
                 <Typography variant="body2">Submitted</Typography>
                 <Typography variant="h5">{overview.submittedCount}</Typography>
               </Box>
               <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: 'blue' }} />
-              <Box sx={{ textAlign: 'center' }}>
+              <Box sx={{ textAlign: 'center', px: 1 }}>
                 <Typography variant="body2">Not Submitted</Typography>
                 <Typography variant="h5">{overview.notSubmittedCount}</Typography>
               </Box>
               <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: 'blue' }} />
-              <Box sx={{ textAlign: 'center' }}>
+              <Box sx={{ textAlign: 'center', px: 1 }}>
                 <Typography variant="body2">Graded</Typography>
                 <Typography variant="h5">{overview.gradedCount}</Typography>
               </Box>
-            </Box>
             </Box>
           </Paper>
         </Grid>

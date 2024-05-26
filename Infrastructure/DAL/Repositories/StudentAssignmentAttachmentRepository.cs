@@ -12,4 +12,12 @@ public class StudentAssignmentAttachmentRepository(DbSet<StudentAssignmentAttach
             .Where(x => x.Id == id)
             .ExecuteDeleteAsync(ct);
     }
+
+    public async Task<StudentAssignmentAttachment?> GetWithAssignment(int id, CancellationToken ct)
+    {
+        return await Entities
+            .Where(x => x.Id == id)
+            .Include(x => x.StudentAssignment)
+            .FirstOrDefaultAsync(ct);
+    }
 }

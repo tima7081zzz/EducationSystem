@@ -2,7 +2,6 @@
 using Azure.Storage.Blobs.Models;
 using BlobStorage.Exceptions;
 using BlobStorage.Models;
-using Core.Helpers;
 using Microsoft.Extensions.Options;
 using BlobInfo = BlobStorage.Models.BlobInfo;
 
@@ -12,6 +11,7 @@ public interface IBlobStorageManager
 {
     Task<BlobInfo> Upload(BlobFileBase file, CancellationToken ct);
     Task<bool> Delete(string blobName, CancellationToken ct);
+    Task<BlobRawModel?> Download(string blobName, CancellationToken ct);
 }
 
 public class BlobStorageManager : IBlobStorageManager
@@ -52,6 +52,28 @@ public class BlobStorageManager : IBlobStorageManager
     {
         var blobClient = _containerClient.GetBlobClient(blobName);
         return await blobClient.DeleteIfExistsAsync(cancellationToken: ct);
+    }
+
+    public async Task<BlobRawModel?> Download(string blobName, CancellationToken ct)
+    {
+        var blobClient = _containerClient.GetBlobClient(blobName);
+
+        if (!await blobClient.ExistsAsync(ct))
+        {
+            return null;
+        }
+
+        var blobProps = await blobClient.GetPropertiesAsync(cancellationToken: ct);
+
+        await using var ms = new MemoryStream();
+        await blobClient.DownloadToAsync(ms, ct);
+        ms.Seek(0, SeekOrigin.Begin);
+        
+        return new BlobRawModel
+        {
+            BinaryData = ms.ToArray(),
+            ContentType = blobProps.Value.ContentType,
+        };
     }
 
     private static string SanitizeBlobName(string fileName)

@@ -196,4 +196,22 @@ public class AssignmentController : BaseController
             return NotFound();
         }
     }
+
+    [HttpGet("attachment/{attachmentId:int}/file")]
+    public async Task<IActionResult> GetAttachmentFile(int attachmentId, CancellationToken ct)
+    {
+        try
+        {
+            var attachmentFileModel = await _mediator.Send(new GetAssignmentAttachmentFileQuery(UserId, attachmentId), ct);
+            return File(attachmentFileModel.BinaryData, attachmentFileModel.ContentType, attachmentFileModel.FileName);
+        }
+        catch (WrongOperationException)
+        {
+            return Forbid();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
 }

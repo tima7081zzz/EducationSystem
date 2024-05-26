@@ -144,6 +144,27 @@ public class AssignmentController : BaseController
         }
     }
     
+    [HttpPost("{id:int}/student-user/{studentUserId:int}/grade")]
+    public async Task<IActionResult> Grade(int id, int studentUserId, GradeAssignmentRequestModel model, CancellationToken ct)
+    {
+        try
+        {
+            var command =
+                new GradeAssignmentCommand(UserId, studentUserId, id, model.Grade, model.GradingComment);
+            await _mediator.Send(command, ct);
+
+            return Ok();
+        }
+        catch (WrongOperationException)
+        {
+            return Forbid();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+    
     [HttpGet("{id:int}/overview")]
     public async Task<IActionResult> Overview(int id, CancellationToken ct)
     {

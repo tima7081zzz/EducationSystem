@@ -21,6 +21,9 @@ public class StudentAssignment
 
     [StringLength(255)]
     public string? SubmissionComment { get; set; }
+    
+    [StringLength(255)]
+    public string? GradingComment { get; set; }
 
     public ICollection<StudentAssignmentAttachment> StudentAssignmentAttachments { get; set; } = [];
 }
@@ -30,4 +33,5 @@ public enum StudentCourseTaskStatus
     NotSubmitted = 0,
     SubmittedLate = 1,
     SubmittedInTime = 2,
+    Graded = 3,
 }

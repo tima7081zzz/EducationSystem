@@ -21,12 +21,9 @@ public class UnsubmitAssignmentCommandHandler : IRequestHandler<UnsubmitAssignme
         var (userId, assignmentId) = request;
 
         var studentAssignment = await _unitOfWork.StudentAssignmentRepository.Get(userId, assignmentId, ct);
-        if (studentAssignment is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(studentAssignment);
 
-        studentAssignment.SubmittedAt = null;
+        studentAssignment!.SubmittedAt = null;
         studentAssignment.SubmissionComment = null;
         studentAssignment.Status = StudentCourseTaskStatus.NotSubmitted;
 

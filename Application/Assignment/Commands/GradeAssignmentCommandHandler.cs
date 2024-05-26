@@ -43,10 +43,8 @@ public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentComm
     private async Task CreateStudentAssignment(GradeAssignmentCommand request, Course course, CancellationToken ct)
     {
         var (userId, studentUserId, assignmentId, grade, gradingComment) = request;
-        if (course.StudentCourses.All(x => x.UserId != studentUserId))
-        {
-            throw new EntityNotFoundException();
-        }
+        
+        EntityNotFoundException.ThrowIf(course.StudentCourses.All(x => x.UserId != studentUserId));
 
         _unitOfWork.StudentAssignmentRepository.Add(new StudentAssignment
         {
@@ -65,21 +63,13 @@ public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentComm
         var (userId, _, assignmentId, grade, _) = request;
         
         var assignment = await _unitOfWork.AssignmentRepository.Get(assignmentId, ct);
-        if (assignment is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(assignment);
 
-        if (assignment.MaxGrade < grade)
-        {
-            throw new WrongOperationException();
-        }
+        WrongOperationException.ThrowIf(assignment!.MaxGrade < grade);
 
         var course = await _unitOfWork.CourseRepository.GetWithCourses(assignment.CourseId, ct);
-        if (course!.TeacherCourses.All(x=> x.UserId != userId))
-        {
-            throw new WrongOperationException();
-        }
+        
+        WrongOperationException.ThrowIf(course!.TeacherCourses.All(x=> x.UserId != userId));
 
         return course;
     }

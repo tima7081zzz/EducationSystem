@@ -19,12 +19,9 @@ public class GetCourseUsersQueryHandler : IRequestHandler<GetCourseUsersQuery, C
     {
         var studentCourses = await _unitOfWork.StudentCourseRepository.GetByCourse(request.CourseId, ct);
         var teacherCourses = await _unitOfWork.TeacherCourseRepository.GetByCourse(request.CourseId, ct);
-        
-        if (teacherCourses.All(x => x.UserId != request.UserId) &&
-            studentCourses.All(x => x.UserId != request.UserId))
-        {
-            throw new EntityNotFoundException();
-        }
+
+        EntityNotFoundException.ThrowIf(teacherCourses.All(x => x.UserId != request.UserId) &&
+                                        studentCourses.All(x => x.UserId != request.UserId));
 
         return new CourseUsersModel
         {

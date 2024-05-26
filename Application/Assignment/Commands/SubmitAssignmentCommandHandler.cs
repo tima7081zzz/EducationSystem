@@ -53,16 +53,10 @@ public class SubmitAssignmentCommandHandler : IRequestHandler<SubmitAssignmentCo
     {
         var (userId, assignmentId, _) = request;
         var assignment = await _unitOfWork.AssignmentRepository.Get(assignmentId, ct);
-        if (assignment is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(assignment);
 
-        var studentCourse = await _unitOfWork.StudentCourseRepository.Get(userId, assignment.CourseId, ct);
-        if (studentCourse is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        var studentCourse = await _unitOfWork.StudentCourseRepository.Get(userId, assignment!.CourseId, ct);
+        EntityNotFoundException.ThrowIfNull(studentCourse);
 
         return assignment;
     }

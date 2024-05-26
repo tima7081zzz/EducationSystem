@@ -21,17 +21,12 @@ public class JoinCourseCommandHandler : IRequestHandler<JoinCourseCommand>
         var (publicId, userId) = request;
 
         var course = await _unitOfWork.CourseRepository.GetWithCourses(publicId, ct);
-        if (course is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(course);
 
-        if (course.CreatorUserId == userId || 
-            course.TeacherCourses.Any(x => x.UserId == userId) ||
-            course.StudentCourses.Any(x => x.UserId == userId))
-        {
-            throw new WrongOperationException();
-        }
+        var notHaveAccess = course!.CreatorUserId == userId ||
+                            course.TeacherCourses.Any(x => x.UserId == userId) ||
+                            course.StudentCourses.Any(x => x.UserId == userId);
+        WrongOperationException.ThrowIf(notHaveAccess);
 
         _unitOfWork.StudentCourseRepository.Add(new StudentCourse
         {

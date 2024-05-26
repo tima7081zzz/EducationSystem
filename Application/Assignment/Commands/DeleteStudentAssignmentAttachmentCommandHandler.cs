@@ -23,12 +23,10 @@ public class DeleteStudentAssignmentAttachmentCommandHandler : IRequestHandler<D
         var (userId, attachmentId) = request;
         
         var attachment = await _unitOfWork.StudentAssignmentAttachmentRepository.Get(attachmentId, ct);
-        if (attachment is null || attachment.StudentUserId != userId)
-        {
-            throw new EntityNotFoundException();
-        }
+        
+        EntityNotFoundException.ThrowIf(attachment is null || attachment.StudentUserId != userId);
 
-        await _blobStorageManager.Delete(attachment.BlobName, ct);
+        await _blobStorageManager.Delete(attachment!.BlobName, ct);
         await _unitOfWork.StudentAssignmentAttachmentRepository.Delete(attachment.Id, ct);
     }
 }

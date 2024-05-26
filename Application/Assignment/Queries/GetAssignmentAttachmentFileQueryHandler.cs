@@ -22,30 +22,22 @@ public class GetAssignmentAttachmentFileQueryHandler : IRequestHandler<GetAssign
     {
         var assignmentAttachment =
             await _unitOfWork.StudentAssignmentAttachmentRepository.GetWithAssignment(request.AssignmentAttachmentId, ct);
-        if (assignmentAttachment is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(assignmentAttachment);
 
-        if (assignmentAttachment.StudentUserId != request.UserId)
+        if (assignmentAttachment!.StudentUserId != request.UserId)
         {
             var assignmentId = assignmentAttachment.StudentAssignment.AssignmentId;
             var isTeacher = await _unitOfWork.AssignmentRepository.IsTeacherForAssignment(request.UserId, assignmentId, ct);
-            if (!isTeacher)
-            {
-                throw new WrongOperationException();
-            }
+            
+            WrongOperationException.ThrowIf(!isTeacher);
         }
 
         var blobRaw = await _blobStorageManager.Download(assignmentAttachment.BlobName, ct);
-        if (blobRaw is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(blobRaw);
 
         return new AttachmentFileModel
         {
-            BinaryData = blobRaw.BinaryData,
+            BinaryData = blobRaw!.BinaryData,
             ContentType = blobRaw.ContentType,
             FileName = assignmentAttachment.FileName,
         };

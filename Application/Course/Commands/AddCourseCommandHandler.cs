@@ -20,10 +20,7 @@ public class AddCourseCommandHandler : IRequestHandler<AddCourseCommand, int>
     {
         var (name, description, category, userId) = request;
 
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new WrongOperationException(); //todo change exception
-        }
+        WrongOperationException.ThrowIf(string.IsNullOrWhiteSpace(name)); //todo change exception
         
         await using var transaction = _unitOfWork.BeginTransaction();
         

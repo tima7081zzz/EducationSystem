@@ -56,18 +56,13 @@ public class GetAssignmentQueryHandler : IRequestHandler<GetAssignmentQuery, Ass
         var (userId, id) = request;
         
         var assignment = await _unitOfWork.AssignmentRepository.Get(id, ct);
-        if (assignment is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(assignment);
         
-        var course = await _unitOfWork.CourseRepository.GetWithCourses(assignment.CourseId, ct);
+        var course = await _unitOfWork.CourseRepository.GetWithCourses(assignment!.CourseId, ct);
         var isTeacher = course?.TeacherCourses.Any(x => x.UserId == userId);
-        
-        if (course is null || isTeacher!.Value || course.StudentCourses.All(x => x.UserId != userId))
-        {
-            throw new EntityNotFoundException();
-        }
+
+        var notHaveAccess = course is null || isTeacher!.Value || course.StudentCourses.All(x => x.UserId != userId);
+        EntityNotFoundException.ThrowIf(notHaveAccess);
 
         return assignment;
     }

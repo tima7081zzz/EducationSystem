@@ -59,20 +59,11 @@ public class AddAssignmentStudentAttachmentCommandHandler : IRequestHandler<AddA
     private async Task ValidateOperation(AddAssignmentStudentAttachmentCommand request, CancellationToken ct)
     {
         var assignment = await _unitOfWork.AssignmentRepository.Get(request.AssignmentId, ct);
-        if (assignment is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(assignment);
 
-        if (assignment.CreatorTeacherId == request.UserId)
-        {
-            throw new WrongOperationException();
-        }
+        WrongOperationException.ThrowIf(assignment!.CreatorTeacherId == request.UserId);
 
         var studentCourse = await _unitOfWork.StudentCourseRepository.Get(request.UserId, assignment.CourseId, ct);
-        if (studentCourse is null)
-        {
-            throw new WrongOperationException();
-        }
+        WrongOperationException.ThrowIfNull(studentCourse);
     }
 }

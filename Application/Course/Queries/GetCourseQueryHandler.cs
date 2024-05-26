@@ -19,13 +19,10 @@ public class GetCourseQueryHandler : IRequestHandler<GetCourseQuery, CourseModel
     {
         var course = await _unitOfWork.CourseRepository.GetWithCourses(request.Id, ct);
         var isTeacher = course?.TeacherCourses.Any(x => x.UserId == request.UserId);
-        
-        if (course is null || (!isTeacher!.Value && course.StudentCourses.All(x => x.UserId != request.UserId)))
-        {
-            throw new EntityNotFoundException();
-        }
 
-        var courseAssignments = await _unitOfWork.AssignmentRepository.GetByCourse(course.Id, ct);
+        EntityNotFoundException.ThrowIf(course is null || (!isTeacher!.Value && course.StudentCourses.All(x => x.UserId != request.UserId)));
+
+        var courseAssignments = await _unitOfWork.AssignmentRepository.GetByCourse(course!.Id, ct);
 
         return new CourseModel
         {
@@ -34,7 +31,7 @@ public class GetCourseQueryHandler : IRequestHandler<GetCourseQuery, CourseModel
             Name = course.Name,
             Description = course.Description,
             Category = course.Category,
-            IsTeacher = isTeacher.Value,
+            IsTeacher = isTeacher!.Value,
             Assignments = courseAssignments.Select(x => new CourseAssignmentModel
             {
                 Id = x.Id,

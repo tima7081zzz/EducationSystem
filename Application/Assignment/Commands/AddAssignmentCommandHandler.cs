@@ -24,18 +24,12 @@ public class AddAssignmentCommandHandler : IRequestHandler<AddAssignmentCommand,
     public async Task<int> Handle(AddAssignmentCommand request, CancellationToken ct)
     {
         var (courseId, maxGrade, title, description, userId, dateTimeOffset) = request;
-        
-        var course = await _unitOfWork.CourseRepository.GetWithCourses(courseId, ct);
-        if (course is null)
-        {
-            throw new EntityNotFoundException();
-        }
 
-        if (course.TeacherCourses.All(x => x.UserId != userId))
-        {
-            throw new WrongOperationException();
-        }
-        
+        var course = await _unitOfWork.CourseRepository.GetWithCourses(courseId, ct);
+        EntityNotFoundException.ThrowIfNull(course);
+
+        WrongOperationException.ThrowIf(course!.TeacherCourses.All(x => x.UserId != userId));
+
         var assignment = _unitOfWork.AssignmentRepository.Add(new DAL.Entities.Assignment
         {
             CourseId = courseId,
@@ -48,7 +42,7 @@ public class AddAssignmentCommandHandler : IRequestHandler<AddAssignmentCommand,
         });
 
         await _unitOfWork.SaveChanges(ct);
-        
+
         return assignment.Id;
     }
 }

@@ -19,12 +19,9 @@ public class GetAssignmentOverviewQueryHandler : IRequestHandler<GetAssignmentOv
     public async Task<GetAssignmentOverviewModel> Handle(GetAssignmentOverviewQuery request, CancellationToken ct)
     {
         var assignment = await _unitOfWork.AssignmentRepository.Get(request.Id, ct);
-        if (assignment is null)
-        {
-            throw new EntityNotFoundException();
-        }
+        EntityNotFoundException.ThrowIfNull(assignment);
 
-        var studentCourses = await _unitOfWork.StudentCourseRepository.GetByCourse(assignment.CourseId, ct);
+        var studentCourses = await _unitOfWork.StudentCourseRepository.GetByCourse(assignment!.CourseId, ct);
 
         var studentAssignments = (await _unitOfWork.StudentAssignmentRepository.GetByAssignment(assignment.Id, ct))
             .ToDictionary(x => x.UserId, x => x);

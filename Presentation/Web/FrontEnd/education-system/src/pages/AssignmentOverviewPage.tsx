@@ -20,7 +20,8 @@ import {
 } from '@mui/material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { getAssignmentOverview, GetAssignmentOverviewModel, StudentAssignmentOverviewModel, getAssignmentTeacherPreview, AssignmentTeacherPreviewModel } from '../services/assignmentService';
-import axios from 'axios';
+import axios from '../axiosConfig';
+import baseUrl from '../config';
 
 const AssignmentOverviewPage: React.FC = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
@@ -167,11 +168,21 @@ const AssignmentOverviewPage: React.FC = () => {
                     <ListItemIcon sx={{ minWidth: '30px' }}>
                       <AttachFileIcon fontSize="small" />
                     </ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ variant: 'body2' }} primary={attachment.name} />
+                    <ListItemText
+            primaryTypographyProps={{ variant: 'body2' }}
+            primary={
+              <a
+              href={`${baseUrl}api/assignment/attachment/${attachment.id}/file`}
+                download={attachment.name}
+                style={{ color: 'inherit' }}
+              >
+                {attachment.name}
+              </a>
+            }
+          />
                   </ListItem>
                   ))}
                 </List>
-
                 <TextField
                   label="Submission Comment"
                   multiline

@@ -5,6 +5,7 @@ import { getAssignmentDetails, uploadAttachment, submitAssignment, unsubmitAssig
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteIcon from '@mui/icons-material/Delete';
+import baseUrl from '../config';
 
 const AssignmentDetailsPage: React.FC = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
@@ -176,18 +177,29 @@ const AssignmentDetailsPage: React.FC = () => {
               </Typography>
             </Box>
             <List>
-              {assignment.attachments.map((attachment) => (
-                <ListItem key={attachment.id} sx={{ padding: '4px 0' }}>
-                  <ListItemIcon sx={{ minWidth: '30px' }}>
-                    <AttachFileIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primaryTypographyProps={{ variant: 'body2' }} primary={attachment.name} />
-                  <IconButton edge="end" onClick={() => handleDeleteAttachment(attachment.id)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </ListItem>
-              ))}
-            </List>
+      {assignment.attachments.map((attachment) => (
+        <ListItem key={attachment.id} sx={{ padding: '4px 0' }}>
+          <ListItemIcon sx={{ minWidth: '30px' }}>
+            <AttachFileIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText
+            primaryTypographyProps={{ variant: 'body2' }}
+            primary={
+              <a
+                href={`${baseUrl}api/assignment/attachment/${attachment.id}/file`}
+                download={attachment.name}
+                style={{ color: 'inherit' }}
+              >
+                {attachment.name}
+              </a>
+            }
+          />
+          <IconButton edge="end" onClick={() => handleDeleteAttachment(attachment.id)}>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </ListItem>
+      ))}
+    </List>
             {assignment.status === StudentCourseTaskStatus.NotSubmitted ? (
               <Box component="form" noValidate autoComplete="off" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Button

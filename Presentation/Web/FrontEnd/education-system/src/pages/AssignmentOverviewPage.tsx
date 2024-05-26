@@ -15,14 +15,17 @@ import {
   DialogContent,
   DialogActions,
   Divider,
+  ListItemIcon,
   Box
 } from '@mui/material';
-import { getAssignmentOverview, GetAssignmentOverviewModel, StudentAssignmentOverviewModel } from '../services/assignmentService';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { getAssignmentOverview, GetAssignmentOverviewModel, StudentAssignmentOverviewModel, getAssignmentTeacherPreview, AssignmentTeacherPreviewModel } from '../services/assignmentService';
 import axios from 'axios';
 
 const AssignmentOverviewPage: React.FC = () => {
   const { assignmentId } = useParams<{ assignmentId: string }>();
   const [overview, setOverview] = useState<GetAssignmentOverviewModel | null>(null);
+  const [teacherPreview, setTeacherPreview] = useState<AssignmentTeacherPreviewModel | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -56,14 +59,26 @@ const AssignmentOverviewPage: React.FC = () => {
   };
 
   const handleOpenDialog = (student: StudentAssignmentOverviewModel) => {
-    setSelectedStudent(student);
     setGradingComment('');
     setOpenDialog(true);
+  }
+
+  const handleListItemClick = async (student: StudentAssignmentOverviewModel) => {
+    setSelectedStudent(student);
+
+    try {
+      const teacherPreviewData = await getAssignmentTeacherPreview(Number(assignmentId), student.userId);
+      setTeacherPreview(teacherPreviewData);
+    } catch (err) {
+      console.error('Failed to fetch teacher preview:', err);
+      setTeacherPreview(null);
+    }
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedStudent(null);
+    setTeacherPreview(null);
   };
 
   const handleSubmitGrade = async () => {
@@ -76,7 +91,6 @@ const AssignmentOverviewPage: React.FC = () => {
 
       try {
         await axios.post(`/api/assignment/${overview.id}/student-user/${selectedStudent.userId}/grade`, request);
-        alert('Grade submitted successfully.');
         handleCloseDialog();
       } catch (err) {
         alert('Failed to submit grade.');
@@ -109,7 +123,7 @@ const AssignmentOverviewPage: React.FC = () => {
             </Typography>
             <List>
               {overview.studentAssignmentInfos.map((student) => (
-                <ListItem key={student.userId} sx={{ display: 'flex', alignItems: 'center' }}>
+                <ListItem key={student.userId} sx={{ display: 'flex', alignItems: 'center' }} button onClick={() => handleListItemClick(student)}>
                   <ListItemText primary={student.userFullname} sx={{ flex: 1 }} />
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <TextField
@@ -120,15 +134,15 @@ const AssignmentOverviewPage: React.FC = () => {
                       size="small"
                       InputProps={{
                         type: "number",
-                 sx: {
-                    '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                        display: 'none'
-                     },
-                     '& input[type=number]': {
-                        MozAppearance: 'textfield'
-                      },
-                    }
-                    }}  
+                        sx: {
+                          '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                            display: 'none'
+                          },
+                          '& input[type=number]': {
+                            MozAppearance: 'textfield'
+                          },
+                        }
+                      }}  
                     />
                   </Box>
                   <Button variant="contained" size="small" color="primary" onClick={() => handleOpenDialog(student)}>
@@ -139,31 +153,61 @@ const AssignmentOverviewPage: React.FC = () => {
             </List>
           </Paper>
         </Grid>
-        <Grid item xs={12} md={8}>              
-          <Paper elevation={3} sx={{ padding: '16px', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h5" gutterBottom>
-              {overview.title}
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', width: '100%' }}>
-              <Box sx={{ textAlign: 'center', px: 1 }}>
-                <Typography variant="body2">Submitted</Typography>
-                <Typography variant="h5">{overview.submittedCount}</Typography>
+        <Grid item xs={12} md={8}>
+          {selectedStudent && teacherPreview ? (
+            <Paper elevation={3} sx={{ padding: '16px', display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h5" gutterBottom>
+                {selectedStudent.userFullname} Preview
+              </Typography>
+              <Box>
+                {teacherPreview.studentAttachments.length > 0 ? <Typography variant="h6">Attachments:</Typography> : ''}
+                <List>
+                  {teacherPreview.studentAttachments.map((attachment) => (
+                    <ListItem key={attachment.id} sx={{ padding: '4px 0' }}>
+                    <ListItemIcon sx={{ minWidth: '30px' }}>
+                      <AttachFileIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primaryTypographyProps={{ variant: 'body2' }} primary={attachment.name} />
+                  </ListItem>
+                  ))}
+                </List>
+
+                <TextField
+                  label="Submission Comment"
+                  multiline
+                  rows={3}
+                  value={teacherPreview.submissionComment}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: 'blue' }} />
-              <Box sx={{ textAlign: 'center', px: 1 }}>
-                <Typography variant="body2">Not Submitted</Typography>
-                <Typography variant="h5">{overview.notSubmittedCount}</Typography>
+            </Paper>
+          ) : (
+            <Paper elevation={3} sx={{ padding: '16px', display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h5" gutterBottom>
+                {overview.title}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'start', width: '100%' }}>
+                <Box sx={{ textAlign: 'center', px: 1 }}>
+                  <Typography variant="body2">Submitted</Typography>
+                  <Typography variant="h5">{overview.submittedCount}</Typography>
+                </Box>
+                <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: 'blue' }} />
+                <Box sx={{ textAlign: 'center', px: 1 }}>
+                  <Typography variant="body2">Not Submitted</Typography>
+                  <Typography variant="h5">{overview.notSubmittedCount}</Typography>
+                </Box>
+                <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: 'blue' }} />
+                <Box sx={{ textAlign: 'center', px: 1 }}>
+                  <Typography variant="body2">Graded</Typography>
+                  <Typography variant="h5">{overview.gradedCount}</Typography>
+                </Box>
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ mx: 2, backgroundColor: 'blue' }} />
-              <Box sx={{ textAlign: 'center', px: 1 }}>
-                <Typography variant="body2">Graded</Typography>
-                <Typography variant="h5">{overview.gradedCount}</Typography>
-              </Box>
-            </Box>
-          </Paper>
+            </Paper>
+          )}
         </Grid>
       </Grid>
-
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Submit Grade</DialogTitle>
         <DialogContent>

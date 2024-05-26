@@ -51,6 +51,12 @@ export enum StudentCourseTaskStatus {
     grade: number;
     gradingComment: string | null;
   }
+
+  export interface AssignmentTeacherPreviewModel {
+    id: number;
+    submissionComment: number | null;
+    studentAttachments: AttachmentModel[];
+  }
   
   export const getAssignmentOverview = async (assignmentId: number): Promise<GetAssignmentOverviewModel> => {
     const response = await axios.get<GetAssignmentOverviewModel>(`/api/assignment/${assignmentId}/overview`);
@@ -91,6 +97,11 @@ const deleteAttachment = async (attachmentId: number): Promise<void> => {
 
  export const gradeStudentAssignment = async (assignmentId: number, studentUserId: number, request: GradeAssignmentRequestModel): Promise<void> => {
   await axios.post(`/api/assignment/${assignmentId}/student-user/${studentUserId}/grade`, request);
+};
+
+export const getAssignmentTeacherPreview = async (assignmentId: number, studentUserId: number): Promise<AssignmentTeacherPreviewModel> => {
+  const response = await axios.get<AssignmentTeacherPreviewModel>(`/api/assignment/${assignmentId}/student-user/${studentUserId}/teacher-preview`);
+  return response.data;
 };
 
 export { getAssignmentDetails, addAssignment, uploadAttachment, submitAssignment, unsubmitAssignment, deleteAttachment };

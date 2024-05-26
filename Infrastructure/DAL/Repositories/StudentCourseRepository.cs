@@ -19,4 +19,12 @@ public class StudentCourseRepository(DbSet<StudentCourse> entities) : GenericRep
         return await Entities
             .FirstOrDefaultAsync(x => x.UserId == userId && x.CourseId == courseId, cancellationToken: ct);
     }
+
+    public async Task<List<StudentCourse>> GetByCourse(int courseId, CancellationToken ct)
+    {
+        return await Entities
+            .Include(x => x.User)
+            .Where(x => x.CourseId == courseId)
+            .ToListAsync(ct);
+    }
 }

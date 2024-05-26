@@ -22,11 +22,11 @@ public class CourseController : BaseController
     }
     
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(int id, CancellationToken ct)
     {
         try
         {
-            var course = await _mediator.Send(new GetCourseQuery(UserId, id));
+            var course = await _mediator.Send(new GetCourseQuery(UserId, id), ct);
             return Ok(course);
         }
         catch (EntityNotFoundException)
@@ -36,9 +36,9 @@ public class CourseController : BaseController
     }
 
     [HttpGet("user-courses")]
-    public async Task<IActionResult> GetForUser()
+    public async Task<IActionResult> GetForUser(CancellationToken ct)
     {
-        var courses = await _mediator.Send(new GetUserCoursesQuery(UserId));
+        var courses = await _mediator.Send(new GetUserCoursesQuery(UserId), ct);
         
         return Ok(new GetUserCoursesResponseModel
         {
@@ -47,13 +47,13 @@ public class CourseController : BaseController
     }
     
     [HttpPost]
-    public async Task<IActionResult> Add(AddCourseRequestModel requestModel)
+    public async Task<IActionResult> Add(AddCourseRequestModel requestModel, CancellationToken ct)
     {
         try
         {
             var command = new AddCourseCommand(requestModel.Name, requestModel.Description, requestModel.Category, UserId);
         
-            var courseId = await _mediator.Send(command);
+            var courseId = await _mediator.Send(command, ct);
         
             return Ok(courseId);
         }
@@ -64,12 +64,26 @@ public class CourseController : BaseController
     }
     
     [HttpPost("{publicId}/join")]
-    public async Task<IActionResult> Join(string publicId)
+    public async Task<IActionResult> Join(string publicId, CancellationToken ct)
     {
         try
         {
-            await _mediator.Send(new JoinCourseCommand(publicId, UserId));
+            await _mediator.Send(new JoinCourseCommand(publicId, UserId), ct);
             return Ok();
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpGet("{id:int}/users")]
+    public async Task<IActionResult> GetCourseUsers(int id, CancellationToken ct)
+    {
+        try
+        {
+            var courseUsers = await _mediator.Send(new GetCourseUsersQuery(UserId, id), ct);
+            return Ok(courseUsers);
         }
         catch (EntityNotFoundException)
         {

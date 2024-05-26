@@ -13,6 +13,14 @@ public class TeacherCourseRepository(DbSet<TeacherCourse> entities) : GenericRep
             .Include(x => x.Course.CreatorUser)
             .ToListAsync(ct);
     }
+    
+    public async Task<List<TeacherCourse>> GetByCourse(int courseId, CancellationToken ct)
+    {
+        return await Entities
+            .Include(x => x.User)
+            .Where(x => x.CourseId == courseId)
+            .ToListAsync(ct);
+    }
 }
 
 public class UserCourseDto

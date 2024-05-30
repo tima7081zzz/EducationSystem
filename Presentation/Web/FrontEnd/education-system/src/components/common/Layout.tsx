@@ -32,7 +32,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={handleDrawerToggle} sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap component={Link} to="/home">
             MyClass
           </Typography>
           <Box sx={{ flexGrow: 1 }} /> {/* Push the logout button to the right */}
@@ -58,7 +58,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItem button component={Link} to="/home">
               <ListItemText primary="Home" />
             </ListItem>
-            {/* Add more menu items as needed */}
+            {/* Add the Settings menu item */}
+            <ListItem button component={Link} to="/settings">
+              <ListItemText primary="Settings" />
+            </ListItem>
           </List>
         </Box>
       </Drawer>

@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Layout from './components/common/Layout';
 import AssignmentOverviewPage from './pages/AssignmentOverviewPage';
+import SettingsPage from './pages/SettingsPage';
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         <Route path="/course/:courseId/assignment/:assignmentId" element={<AssignmentPage />} />
         <Route path="/course/:courseId/assignment/:assignmentId/overview" element={<AssignmentOverviewPage/>} />
         <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Routes>
     </Router>
   );

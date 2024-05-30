@@ -1,10 +1,15 @@
 using Assignment;
 using BlobStorage.DI;
 using Course;
+using Emailing.DI;
+using Events.DI;
+using Handlers.DI;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.AddMvc();
 
@@ -25,7 +30,10 @@ builder.Services.AddSwaggerGen();
 builder.Services
     .AddAuth()
     .AddDal(builder.Configuration)
+    .AddHandlers()
+    .AddEvents()
     .AddBlob(builder.Configuration)
+    .AddEmailing(builder.Configuration)
     .AddCourse()
     .AddAssignment();
 

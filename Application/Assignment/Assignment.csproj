@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Infrastructure\BlobStorage\BlobStorage.csproj" />
       <ProjectReference Include="..\..\Infrastructure\DAL\DAL.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Events\Events.csproj" />
       <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 

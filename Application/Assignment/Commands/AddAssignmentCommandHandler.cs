@@ -1,5 +1,7 @@
 ﻿using Core.Exceptions;
 using DAL;
+using Events;
+using Events.Events;
 using MediatR;
 
 namespace Assignment.Commands;
@@ -15,10 +17,12 @@ public record AddAssignmentCommand(
 public class AddAssignmentCommandHandler : IRequestHandler<AddAssignmentCommand, int>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEventRaiser _eventRaiser;
 
-    public AddAssignmentCommandHandler(IUnitOfWork unitOfWork)
+    public AddAssignmentCommandHandler(IUnitOfWork unitOfWork, IEventRaiser eventRaiser)
     {
         _unitOfWork = unitOfWork;
+        _eventRaiser = eventRaiser;
     }
 
     public async Task<int> Handle(AddAssignmentCommand request, CancellationToken ct)
@@ -42,6 +46,8 @@ public class AddAssignmentCommandHandler : IRequestHandler<AddAssignmentCommand,
         });
 
         await _unitOfWork.SaveChanges(ct);
+
+        await _eventRaiser.Raise(new AssignmentAddedEvent(new AssignmentAddedEventArgs(assignment.Id)), ct);
 
         return assignment.Id;
     }

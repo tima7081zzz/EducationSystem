@@ -12,7 +12,8 @@ import {
   ListItem,
   ListItemText,
   Paper,
-  CircularProgress
+  CircularProgress,
+  IconButton
 } from '@mui/material';
 import { useParams, Link } from 'react-router-dom';
 import CourseHeader from '../components/course/CourseHeader';
@@ -20,7 +21,8 @@ import CoursePublicId from '../components/course/CoursePublicId';
 import AssignmentList from '../components/course/AssignmentList';
 import AddAssignmentModal from '../components/course/AddAssignmentModal';
 import AddIcon from '@mui/icons-material/Add';
-import { getCourseDetails, CourseModel, getCourseUsers, CourseUsersModel } from '../services/courseService';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { getCourseDetails, CourseModel, getCourseUsers, CourseUsersModel, deleteStudentFromCourse } from '../services/courseService';
 import { addAssignment, AddAssignmentRequestModel } from '../services/assignmentService';
 
 const colors = [
@@ -38,7 +40,7 @@ const CourseDetailsPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false);
-  const [currentTab, setCurrentTab] = useState<number>(0); // State to manage current tab index
+  const [currentTab, setCurrentTab] = useState<number>(0);
   const [courseUsers, setCourseUsers] = useState<CourseUsersModel | null>(null);
   const [isUsersLoading, setIsUsersLoading] = useState<boolean>(false);
   const [usersError, setUsersError] = useState<string | null>(null);
@@ -110,6 +112,18 @@ const CourseDetailsPage: React.FC = () => {
     }
   }, [currentTab, courseId, courseUsers]);
 
+  const handleDeleteStudent = async (studentId: number) => {
+    if (courseId) {
+      try {
+        await deleteStudentFromCourse(studentId);
+        const users = await getCourseUsers(Number(courseId));
+        setCourseUsers(users);
+      } catch (err) {
+        alert('Failed to delete student from course.');
+      }
+    }
+  };
+
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
@@ -160,8 +174,8 @@ const CourseDetailsPage: React.FC = () => {
             <Typography variant="h5" gutterBottom>Teachers</Typography>
             <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
               <List>
-                {courseUsers.teachers.map((teacher, index) => (
-                  <ListItem key={index}>
+                {courseUsers.teachers.map((teacher) => (
+                  <ListItem key={teacher.courseUserId}>
                     <ListItemText primary={teacher.fullname} />
                   </ListItem>
                 ))}
@@ -170,8 +184,17 @@ const CourseDetailsPage: React.FC = () => {
             <Typography variant="h5" gutterBottom>Students</Typography>
             <Paper elevation={3} sx={{ padding: '16px', mb: 3 }}>
               <List>
-                {courseUsers.students.map((student, index) => (
-                  <ListItem key={index}>
+                {courseUsers.students.map((student) => (
+                  <ListItem
+                    key={student.courseUserId}
+                    secondaryAction={
+                      course.isTeacher ? (
+                        <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteStudent(student.courseUserId)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      ) : null
+                    }
+                  >
                     <ListItemText primary={student.fullname} />
                   </ListItem>
                 ))}

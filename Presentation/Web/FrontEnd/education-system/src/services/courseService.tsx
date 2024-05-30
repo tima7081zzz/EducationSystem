@@ -46,6 +46,7 @@ export interface CourseUsersModel {
 }
 
 export interface CourseUserModel {
+  courseUserId: number;
   fullname: string;
 }
 
@@ -73,4 +74,8 @@ const getCourseUsers = async (courseId: number): Promise<CourseUsersModel> => {
   return response.data;
 };
 
-export { getUserCourses, createCourse, getCourseDetails, joinCourse, getCourseUsers };
+const deleteStudentFromCourse = async (id: number): Promise<void> => {
+  await axios.delete(`/api/course/student-course/${id}`);
+};
+
+export { getUserCourses, createCourse, getCourseDetails, joinCourse, getCourseUsers, deleteStudentFromCourse };

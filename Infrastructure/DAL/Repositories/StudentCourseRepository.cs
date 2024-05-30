@@ -38,4 +38,18 @@ public class StudentCourseRepository(DbSet<StudentCourse> entities) : GenericRep
             .Select(x => x.User)
             .ToListAsync(ct);
     }
+
+    public async Task DeleteByCourse(int courseId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.CourseId == courseId)
+            .ExecuteDeleteAsync(ct);
+    }
+    
+    public async Task DeleteByUser(int userId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.UserId == userId)
+            .ExecuteDeleteAsync(ct);
+    }
 }

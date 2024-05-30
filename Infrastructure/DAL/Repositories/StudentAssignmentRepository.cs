@@ -32,4 +32,18 @@ public class StudentAssignmentRepository(DbSet<StudentAssignment> entities) : Ge
             .Where(x => x.AssignmentId == assignmentId)
             .ToListAsync(ct);
     }
+
+    public async Task DeleteByCourse(int courseId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.Assignment.CourseId == courseId)
+            .ExecuteDeleteAsync(ct);
+    }
+    
+    public async Task DeleteByUser(int userId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.UserId == userId)
+            .ExecuteDeleteAsync(ct);
+    }
 }

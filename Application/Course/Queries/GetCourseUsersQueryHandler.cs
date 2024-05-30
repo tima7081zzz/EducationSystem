@@ -25,8 +25,8 @@ public class GetCourseUsersQueryHandler : IRequestHandler<GetCourseUsersQuery, C
 
         return new CourseUsersModel
         {
-            Teachers = teacherCourses.Select(x => new CourseUserModel {Fullname = x.User.Fullname}),
-            Students = studentCourses.Select(x => new CourseUserModel {Fullname = x.User.Fullname}),
+            Teachers = teacherCourses.Select(x => new CourseUserModel {CourseUserId = x.Id, Fullname = x.User.Fullname}),
+            Students = studentCourses.Select(x => new CourseUserModel {CourseUserId = x.Id, Fullname = x.User.Fullname}),
         };
     }
 }
@@ -39,5 +39,6 @@ public class CourseUsersModel
 
 public class CourseUserModel
 {
+    public int CourseUserId { get; set; }
     public required string Fullname { get; set; }
 }

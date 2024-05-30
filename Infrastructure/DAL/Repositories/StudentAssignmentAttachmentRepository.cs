@@ -13,6 +13,20 @@ public class StudentAssignmentAttachmentRepository(DbSet<StudentAssignmentAttach
             .ExecuteDeleteAsync(ct);
     }
 
+    public async Task DeleteByCourse(int courseId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.StudentAssignment.Assignment.CourseId == courseId)
+            .ExecuteDeleteAsync(ct);
+    }
+    
+    public async Task DeleteByUser(int userId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.StudentUserId == userId)
+            .ExecuteDeleteAsync(ct);
+    }
+
     public async Task<StudentAssignmentAttachment?> GetWithAssignment(int id, CancellationToken ct)
     {
         return await Entities

@@ -21,6 +21,13 @@ public class TeacherCourseRepository(DbSet<TeacherCourse> entities) : GenericRep
             .Where(x => x.CourseId == courseId)
             .ToListAsync(ct);
     }
+
+    public async Task DeleteByCourse(int courseId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.CourseId == courseId)
+            .ExecuteDeleteAsync(ct);
+    }
 }
 
 public class UserCourseDto

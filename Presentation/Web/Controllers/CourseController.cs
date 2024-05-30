@@ -85,6 +85,42 @@ public class CourseController : BaseController
             var courseUsers = await _mediator.Send(new GetCourseUsersQuery(UserId, id), ct);
             return Ok(courseUsers);
         }
+        catch (EntityNotFoundException) 
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        try
+        {
+            await _mediator.Send(new DeleteCourseCommand(UserId, id), ct);
+            return Ok();
+        }
+        catch (WrongOperationException)
+        {
+            return BadRequest("name can not be empty");
+        }
+        catch (EntityNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+    
+    [HttpDelete("student-course/{id:int}")]
+    public async Task<IActionResult> DeleteStudent(int id, CancellationToken ct)
+    {
+        try
+        {
+            await _mediator.Send(new DeleteStudentCommand(UserId, id), ct);
+            return Ok();
+        }
+        catch (WrongOperationException)
+        {
+            return BadRequest("name can not be empty");
+        }
         catch (EntityNotFoundException)
         {
             return NotFound();

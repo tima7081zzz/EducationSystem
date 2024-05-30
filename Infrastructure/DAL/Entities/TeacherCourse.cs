@@ -15,5 +15,5 @@ public class TeacherCourse
     public int UserId { get; set; }
     public Course Course { get; set; } = default!;
     public int CourseId { get; set; }
-    public bool IsNotificationsEnabled = true;
+    public bool IsNotificationsEnabled { get; set; } = true;
 }

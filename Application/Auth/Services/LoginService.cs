@@ -71,6 +71,18 @@ public class LoginService : ILoginService
 
         await _unitOfWork.SaveChanges(ct);
 
+        _unitOfWork.UserNotificationSettingsRepository.Add(new UserNotificationSettings
+        {
+            UserId = user.Id,
+            IsEnabled = true,
+            NewAssignmentEnabled = true,
+            DeadlineReminderEnabled = true,
+            GradingAssignmentEnabled = true,
+            AssignmentSubmittedEnabled = true,
+        });
+
+        await _unitOfWork.SaveChanges(ct);
+
         return new UserDto
         {
             Id = user.Id,

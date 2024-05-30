@@ -8,4 +8,5 @@ public static class Indexes
     public const string StudentAssignmentUserIdAssignmentId = "IX_StudentAssignment_UserId_AssignmentId";
     public const string CoursePublicId = "IX_Course_PublicId";
     public const string AssignmentCourseId = "IX_Assignment_CourseId";
+    public const string UserNotificationSettingsUserId = "IX_UserNotificationSettings_UserId";
 }

@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DAL.Constants;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Entities;
 
+[Index(nameof(UserId), Name = Indexes.UserNotificationSettingsUserId, IsUnique = true)]
 public class UserNotificationSettings
 {
     [Key]
@@ -10,12 +13,11 @@ public class UserNotificationSettings
     public int Id { get; set; }
 
     public int UserId { get; set; }
-    public User User { get; set; }
-    
-    public bool IsEnabled { get; set; }
-    public bool NewAssignmentEnabled { get; set; }
-    public bool DeadlineReminderEnabled { get; set; }
-    public bool GradingAssignmentEnabled { get; set; }
-    
-    public bool AssignmentSubmittedEnabled { get; set; }
+    public User User { get; set; } = default!;
+
+    public bool IsEnabled { get; set; } = true;
+    public bool NewAssignmentEnabled { get; set; } = true;
+    public bool DeadlineReminderEnabled { get; set; } = true;
+    public bool GradingAssignmentEnabled { get; set; } = true;
+    public bool AssignmentSubmittedEnabled { get; set; } = true;
 }

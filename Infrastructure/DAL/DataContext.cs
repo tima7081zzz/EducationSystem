@@ -19,7 +19,7 @@ public class DataContext : DbContext
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<StudentAssignmentAttachment> StudentAssignmentAttachments { get; set; }
     public DbSet<StudentAssignment> StudentAssignments { get; set; }
-    //public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<UserNotificationSettings> UserNotificationSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,6 +33,25 @@ public class DataContext : DbContext
             u.HasMany(x => x.Assignments).WithOne(y => y.CreatorTeacher).OnDelete(DeleteBehavior.NoAction);
             u.HasMany(x => x.StudentAssignmentAttachments).WithOne(y => y.StudentUser).OnDelete(DeleteBehavior.NoAction);
             u.HasOne(x => x.NotificationSettings).WithOne(y => y.User).OnDelete(DeleteBehavior.NoAction);
+        });
+
+        modelBuilder.Entity<UserNotificationSettings>(e =>
+        {
+            e.Property(x => x.IsEnabled).HasDefaultValue(true);
+            e.Property(x => x.NewAssignmentEnabled).HasDefaultValue(true);
+            e.Property(x => x.DeadlineReminderEnabled).HasDefaultValue(true);
+            e.Property(x => x.GradingAssignmentEnabled).HasDefaultValue(true);
+            e.Property(x => x.AssignmentSubmittedEnabled).HasDefaultValue(true);
+        });
+
+        modelBuilder.Entity<StudentCourse>(e =>
+        {
+            e.Property(x => x.IsNotificationsEnabled).HasDefaultValue(true);
+        });
+        
+        modelBuilder.Entity<TeacherCourse>(e =>
+        {
+            e.Property(x => x.IsNotificationsEnabled).HasDefaultValue(true);
         });
     }
 }

@@ -14,6 +14,7 @@ public interface IUnitOfWork
     AssignmentRepository AssignmentRepository { get; }
     StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
     StudentAssignmentRepository StudentAssignmentRepository { get; }
+    UserNotificationSettingsRepository UserNotificationSettingsRepository { get; }
 }
 
 public class UnitOfWork : IUnitOfWork
@@ -26,6 +27,7 @@ public class UnitOfWork : IUnitOfWork
     public AssignmentRepository AssignmentRepository { get; }
     public StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
     public StudentAssignmentRepository StudentAssignmentRepository { get; }
+    public UserNotificationSettingsRepository UserNotificationSettingsRepository { get; }
 
     public UnitOfWork(DataContext dataContext)
     {
@@ -39,6 +41,7 @@ public class UnitOfWork : IUnitOfWork
         AssignmentRepository = new AssignmentRepository(dataContext.Assignments);
         StudentAssignmentAttachmentRepository = new StudentAssignmentAttachmentRepository(dataContext.StudentAssignmentAttachments);
         StudentAssignmentRepository = new StudentAssignmentRepository(dataContext.StudentAssignments);
+        UserNotificationSettingsRepository = new UserNotificationSettingsRepository(dataContext.UserNotificationSettings);
     }
     
     public IDbContextTransaction BeginTransaction()

@@ -5,6 +5,7 @@ using Emailing.DI;
 using Events.DI;
 using Handlers.DI;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Settings;
 using Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,8 @@ builder.Services
     .AddBlob(builder.Configuration)
     .AddEmailing(builder.Configuration)
     .AddCourse()
-    .AddAssignment();
+    .AddAssignment()
+    .AddSettings();
 
 builder.Services.AddControllers();
 

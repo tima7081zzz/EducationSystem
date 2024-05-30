@@ -126,4 +126,11 @@ public class CourseController : BaseController
             return NotFound();
         }
     }
+
+    [HttpPut("user-course/{id:int}/toggle-notifications")]
+    public async Task<IActionResult> ToggleUserCourseNotification(int id, CancellationToken ct)
+    {
+        await _mediator.Send(new ToggleCourseNotificationsCommand(UserId, id), ct);
+        return Ok();
+    }
 }

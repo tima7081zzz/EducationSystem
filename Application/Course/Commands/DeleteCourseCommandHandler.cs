@@ -1,5 +1,4 @@
-﻿using System.Transactions;
-using Core.Exceptions;
+﻿using Core.Exceptions;
 using DAL;
 using MediatR;
 

@@ -24,6 +24,7 @@
       <ProjectReference Include="..\..\Application\Assignment\Assignment.csproj" />
       <ProjectReference Include="..\..\Application\Auth\Auth.csproj" />
       <ProjectReference Include="..\..\Application\Course\Course.csproj" />
+      <ProjectReference Include="..\..\Application\Settings\Settings.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Emailing\Emailing.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Events\Events.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Handlers\Handlers.csproj" />

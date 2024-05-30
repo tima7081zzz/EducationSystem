@@ -31,7 +31,7 @@ public class AddAssignmentEventHandler : BaseEventHandler<AssignmentAddedEventAr
 
         var course = await _unitOfWork.CourseRepository.Get(assignment!.Id, ct);
 
-        var toUsers = await _unitOfWork.StudentCourseRepository.GetUsersForNotification(assignment!.CourseId,
+        var toUsers = await _unitOfWork.StudentCourseRepository.GetUsersForNotification(assignment.CourseId,
                 x => x.NewAssignmentEnabled, ct);
         
         var toEmails = toUsers

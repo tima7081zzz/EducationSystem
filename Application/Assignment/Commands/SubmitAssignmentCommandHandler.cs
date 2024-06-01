@@ -1,6 +1,8 @@
 ﻿using Core.Exceptions;
 using DAL;
 using DAL.Entities;
+using Events;
+using Events.Events;
 using MediatR;
 
 namespace Assignment.Commands;
@@ -10,10 +12,12 @@ public record SubmitAssignmentCommand(int UserId, int AssignmentId, string? Comm
 public class SubmitAssignmentCommandHandler : IRequestHandler<SubmitAssignmentCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEventRaiser _eventRaiser;
 
-    public SubmitAssignmentCommandHandler(IUnitOfWork unitOfWork)
+    public SubmitAssignmentCommandHandler(IUnitOfWork unitOfWork, IEventRaiser eventRaiser)
     {
         _unitOfWork = unitOfWork;
+        _eventRaiser = eventRaiser;
     }
 
     public async Task Handle(SubmitAssignmentCommand request, CancellationToken ct)
@@ -47,6 +51,8 @@ public class SubmitAssignmentCommandHandler : IRequestHandler<SubmitAssignmentCo
 
         await _unitOfWork.SaveChanges(ct);
         await transaction.CommitAsync(ct);
+
+        await _eventRaiser.Raise(new AssignmentSubmittedEvent(new AssignmentSubmittedEventArgs(studentAssignment.Id)), ct);
     }
 
     private async Task<DAL.Entities.Assignment> ValidateOperation(SubmitAssignmentCommand request, CancellationToken ct)

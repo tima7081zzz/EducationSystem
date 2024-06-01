@@ -8,16 +8,17 @@ using Microsoft.Extensions.Options;
 
 namespace Handlers;
 
-[EventBind(typeof(AssignmentGradedEvent))]
-public interface IAssignmentGradedEventHandler : IBackgroundEventHandler;
+[EventBind(typeof(AssignmentSubmittedEvent))]
+public interface IAssignmentSubmittedEventHandler : IBackgroundEventHandler;
 
-public class AssignmentGradedEventHandler : BaseEventHandler<AssignmentAddedEventArgs>, IAssignmentGradedEventHandler
+public class AssignmentSubmittedEventHandler : BaseEventHandler<AssignmentSubmittedEventArgs>,
+    IAssignmentSubmittedEventHandler
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailSender _emailSender;
     private readonly IOptionsSnapshot<EmailingOptions> _emailingOptions;
 
-    public AssignmentGradedEventHandler(ILogger<BaseEventHandler<AssignmentAddedEventArgs>> logger,
+    public AssignmentSubmittedEventHandler(ILogger<BaseEventHandler<AssignmentSubmittedEventArgs>> logger,
         IUnitOfWork unitOfWork, IEmailSender emailSender,
         IOptionsSnapshot<EmailingOptions> emailingOptions) : base(logger)
     {
@@ -26,24 +27,24 @@ public class AssignmentGradedEventHandler : BaseEventHandler<AssignmentAddedEven
         _emailingOptions = emailingOptions;
     }
 
-    protected override async Task<HandlerInvokeResult> InternalInvoke(AssignmentAddedEventArgs eventArgs,
+    protected override async Task<HandlerInvokeResult> InternalInvoke(AssignmentSubmittedEventArgs eventArgs,
         CancellationToken ct)
     {
-        var studentAssignment = await _unitOfWork.StudentAssignmentRepository.Get(eventArgs.AssignmentId, ct);
+        var studentAssignment = await _unitOfWork.StudentAssignmentRepository.Get(eventArgs.StudentAssignmentId, ct);
         EntityNotFoundException.ThrowIfNull(studentAssignment);
 
         var assignment = await _unitOfWork.AssignmentRepository.Get(studentAssignment!.AssignmentId, ct);
         var studentUser = await _unitOfWork.UserRepository.Get(studentAssignment.UserId, ct);
-
+        
         var senderClient = _emailingOptions.Value.NotificationSender;
         await _emailSender.SendEmailAsync(new EmailParams
         {
             FromName = senderClient.Name,
             FromEmail = senderClient.Email,
-            Subject = "MyClass. Assignment graded!",
-            HtmlBody = $"Hello! Assignment {assignment!.Title} was graded - {studentAssignment.Grade}",
+            Subject = "MyClass. Assignment submitted!",
+            HtmlBody = $"Hello! Assignment {assignment!.Title} was submitted by - {studentUser!.Email}",
             //TextBody = "Assd",
-            ToList = [studentUser!.Email],
+            ToList = [studentUser.Email],
         }, new ClientParams
         {
             Username = senderClient.Username,

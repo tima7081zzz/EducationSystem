@@ -19,4 +19,11 @@ public class AssignmentRepository(DbSet<Assignment> entities) : GenericRepositor
             .Where(x => x.Course.TeacherCourses.Any(y => y.UserId == teacherUserId))
             .AnyAsync(ct);
     }
+
+    public async Task<List<Assignment>> GetAssignmentsToCheckDeadlines(DateTimeOffset from, DateTimeOffset to, CancellationToken ct)
+    {
+        return await Entities
+            .Where(x => x.Deadline > from && x.Deadline < to)
+            .ToListAsync(ct);
+    }
 }

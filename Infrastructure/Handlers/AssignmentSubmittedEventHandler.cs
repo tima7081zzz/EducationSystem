@@ -37,7 +37,7 @@ public class AssignmentSubmittedEventHandler : BaseEventHandler<AssignmentSubmit
         var studentUser = await _unitOfWork.UserRepository.Get(studentAssignment.UserId, ct);
         
         var teacherUsers = await _unitOfWork.TeacherCourseRepository.GetUsersForNotification(assignment!.CourseId,
-            x => x.AssignmentSubmittedEnabled, ct);
+            x => x.User.NotificationSettings.AssignmentSubmittedEnabled, ct);
         
         if (teacherUsers.Count == 0)
         {

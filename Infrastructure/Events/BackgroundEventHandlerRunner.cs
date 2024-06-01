@@ -32,7 +32,7 @@ public class BackgroundEventHandlerRunner : IBackgroundEventHandlerRunner
             }
             catch (Exception e)
             {
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<BackgroundEventHandlerRunner>>();
                 logger.LogError(e.InnerException ?? e, $"{nameof(BackgroundEventHandlerRunner)} Failed to run task");
             }
         });

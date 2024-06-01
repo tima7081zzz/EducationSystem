@@ -38,12 +38,13 @@ public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentComm
             studentAssignment.GradingComment = gradingComment;
 
             await _unitOfWork.SaveChanges(ct);
+            await RaiseEvent(studentAssignment.Id, ct);
             return;
         }
 
         studentAssignment = await CreateStudentAssignment(request, course, ct);
 
-        await _eventRaiser.Raise(new AssignmentGradedEvent(new AssignmentGradedEventArgs(studentAssignment.Id)), ct);
+        await RaiseEvent(studentAssignment.Id, ct);
     }
 
     private async Task<StudentAssignment> CreateStudentAssignment(GradeAssignmentCommand request, Course course, CancellationToken ct)
@@ -80,5 +81,10 @@ public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentComm
         WrongOperationException.ThrowIf(course!.TeacherCourses.All(x=> x.UserId != userId));
 
         return course;
+    }
+
+    private async Task RaiseEvent(int studentAssignmentId, CancellationToken ct)
+    {
+        await _eventRaiser.Raise(new AssignmentGradedEvent(new AssignmentGradedEventArgs(studentAssignmentId)), ct);
     }
 }

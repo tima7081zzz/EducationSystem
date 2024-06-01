@@ -34,7 +34,7 @@ public class AssignmentDeadlineApproachingEventHandler : BaseEventHandler<Assign
         EntityNotFoundException.ThrowIfNull(assignment);
 
         var studentUsers = await _unitOfWork.StudentCourseRepository.GetUsersForNotification(assignment!.CourseId,
-                x => x.DeadlineReminderEnabled, ct);
+                x => x.User.NotificationSettings.DeadlineReminderEnabled, ct);
         if (studentUsers.Count == 0)
         {
             return Success();
@@ -46,7 +46,7 @@ public class AssignmentDeadlineApproachingEventHandler : BaseEventHandler<Assign
             FromName = senderClient.Name,
             FromEmail = senderClient.Email,
             Subject = "MyClass. Assignment deadline reminder!",
-            HtmlBody = $"Hello! Assignment {assignment.Title} deadline is approaching! Deadline is {assignment.Deadline}",
+            HtmlBody = $"Hello! Assignment {assignment.Title} deadline is approaching! Deadline is {assignment.Deadline.DateTime}",
             //TextBody = "Assd",
             ToList = studentUsers.Select(x => x.Email).ToList(),
         }, new ClientParams

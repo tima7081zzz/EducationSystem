@@ -1,4 +1,5 @@
-﻿using DAL.Entities;
+﻿using System.Linq.Expressions;
+using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories;
@@ -29,11 +30,12 @@ public class TeacherCourseRepository(DbSet<TeacherCourse> entities) : GenericRep
             .ExecuteDeleteAsync(ct);
     }
     
-    public async Task<List<User>> GetUsersForNotification(int courseId, Func<UserNotificationSettings, bool> notificationAction, CancellationToken ct)
+    public async Task<List<User>> GetUsersForNotification(int courseId, Expression<Func<TeacherCourse, bool>> notificationAction, CancellationToken ct)
     {
         return await Entities
             .Include(x => x.User)
-            .Where(x => x.User.NotificationSettings.IsEnabled && notificationAction(x.User.NotificationSettings))
+            .Where(x => x.User.NotificationSettings.IsEnabled)
+            .Where(notificationAction)
             .Where(x => x.CourseId == courseId)
             .Where(x => x.IsNotificationsEnabled)
             .Select(x => x.User)

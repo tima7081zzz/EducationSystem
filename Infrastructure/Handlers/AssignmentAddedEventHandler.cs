@@ -11,13 +11,13 @@ namespace Handlers;
 [EventBind(typeof(AssignmentAddedEvent))]
 public interface IAssignmentAddedEventHandler : IBackgroundEventHandler;
 
-public class AssignmentAddedAddedEventHandler : BaseEventHandler<AssignmentAddedEventArgs>, IAssignmentAddedEventHandler
+public class AssignmentAddedEventHandler : BaseEventHandler<AssignmentAddedEventArgs>, IAssignmentAddedEventHandler
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailSender _emailSender;
     private readonly IOptionsSnapshot<EmailingOptions> _emailingOptions;
     
-    public AssignmentAddedAddedEventHandler(ILogger<BaseEventHandler<AssignmentAddedEventArgs>> logger, IUnitOfWork unitOfWork, IEmailSender emailSender, IOptionsSnapshot<EmailingOptions> emailingOptions) : base(logger)
+    public AssignmentAddedEventHandler(ILogger<BaseEventHandler<AssignmentAddedEventArgs>> logger, IUnitOfWork unitOfWork, IEmailSender emailSender, IOptionsSnapshot<EmailingOptions> emailingOptions) : base(logger)
     {
         _unitOfWork = unitOfWork;
         _emailSender = emailSender;
@@ -29,10 +29,10 @@ public class AssignmentAddedAddedEventHandler : BaseEventHandler<AssignmentAdded
         var assignment = await _unitOfWork.AssignmentRepository.Get(eventArgs.AssignmentId, ct);
         EntityNotFoundException.ThrowIfNull(assignment);
 
-        var course = await _unitOfWork.CourseRepository.Get(assignment!.Id, ct);
+        var course = await _unitOfWork.CourseRepository.Get(assignment!.CourseId, ct);
 
         var toUsers = await _unitOfWork.StudentCourseRepository.GetUsersForNotification(assignment.CourseId,
-                x => x.NewAssignmentEnabled, ct);
+                x => x.User.NotificationSettings.NewAssignmentEnabled, ct);
         
         var toEmails = toUsers
             .Select(x => x.Email)

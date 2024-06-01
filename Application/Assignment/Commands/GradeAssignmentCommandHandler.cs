@@ -1,6 +1,8 @@
 ﻿using Core.Exceptions;
 using DAL;
 using DAL.Entities;
+using Events;
+using Events.Events;
 using MediatR;
 
 namespace Assignment.Commands;
@@ -15,10 +17,12 @@ public record GradeAssignmentCommand(
 public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEventRaiser _eventRaiser;
 
-    public GradeAssignmentCommandHandler(IUnitOfWork unitOfWork)
+    public GradeAssignmentCommandHandler(IUnitOfWork unitOfWork, IEventRaiser eventRaiser)
     {
         _unitOfWork = unitOfWork;
+        _eventRaiser = eventRaiser;
     }
 
     public async Task Handle(GradeAssignmentCommand request, CancellationToken ct)
@@ -37,16 +41,18 @@ public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentComm
             return;
         }
 
-        await CreateStudentAssignment(request, course, ct);
+        studentAssignment = await CreateStudentAssignment(request, course, ct);
+
+        await _eventRaiser.Raise(new AssignmentGradedEvent(new AssignmentGradedEventArgs(studentAssignment.Id)), ct);
     }
 
-    private async Task CreateStudentAssignment(GradeAssignmentCommand request, Course course, CancellationToken ct)
+    private async Task<StudentAssignment> CreateStudentAssignment(GradeAssignmentCommand request, Course course, CancellationToken ct)
     {
         var (userId, studentUserId, assignmentId, grade, gradingComment) = request;
         
         EntityNotFoundException.ThrowIf(course.StudentCourses.All(x => x.UserId != studentUserId));
 
-        _unitOfWork.StudentAssignmentRepository.Add(new StudentAssignment
+        var studentAssignment = _unitOfWork.StudentAssignmentRepository.Add(new StudentAssignment
         {
             UserId = userId,
             AssignmentId = assignmentId,
@@ -56,6 +62,8 @@ public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentComm
         });
 
         await _unitOfWork.SaveChanges(ct);
+
+        return studentAssignment;
     }
 
     private async Task<Course> ValidateOperation(GradeAssignmentCommand request, CancellationToken ct)

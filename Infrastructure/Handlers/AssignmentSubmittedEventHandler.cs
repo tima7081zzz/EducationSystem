@@ -36,6 +36,14 @@ public class AssignmentSubmittedEventHandler : BaseEventHandler<AssignmentSubmit
         var assignment = await _unitOfWork.AssignmentRepository.Get(studentAssignment!.AssignmentId, ct);
         var studentUser = await _unitOfWork.UserRepository.Get(studentAssignment.UserId, ct);
         
+        var teacherUsers = await _unitOfWork.TeacherCourseRepository.GetUsersForNotification(assignment!.CourseId,
+            x => x.NewAssignmentEnabled, ct);
+        
+        if (teacherUsers.Count == 0)
+        {
+            return Success();
+        }
+        
         var senderClient = _emailingOptions.Value.NotificationSender;
         await _emailSender.SendEmailAsync(new EmailParams
         {
@@ -44,7 +52,7 @@ public class AssignmentSubmittedEventHandler : BaseEventHandler<AssignmentSubmit
             Subject = "MyClass. Assignment submitted!",
             HtmlBody = $"Hello! Assignment {assignment!.Title} was submitted by - {studentUser!.Email}",
             //TextBody = "Assd",
-            ToList = [studentUser.Email],
+            ToList = teacherUsers.Select(x => x.Email).ToList(),
         }, new ClientParams
         {
             Username = senderClient.Username,

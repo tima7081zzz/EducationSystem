@@ -28,13 +28,20 @@ public class StudentCourseRepository(DbSet<StudentCourse> entities) : GenericRep
             .ToListAsync(ct);
     }
 
-    public async Task<List<User>> GetUsersForNotification(int courseId, Func<UserNotificationSettings, bool> notificationAction, CancellationToken ct)
+    public async Task<List<User>> GetUsersForNotification(int courseId, Func<UserNotificationSettings, bool> notificationAction, CancellationToken ct, int? userId = null)
     {
-        return await Entities
+        var query = Entities
             .Include(x => x.User)
             .Where(x => x.User.NotificationSettings.IsEnabled && notificationAction(x.User.NotificationSettings))
             .Where(x => x.CourseId == courseId)
-            .Where(x => x.IsNotificationsEnabled)
+            .Where(x => x.IsNotificationsEnabled);
+
+        if (userId.HasValue)
+        {
+            query = query.Where(x => x.UserId == userId);
+        }
+        
+        return await query
             .Select(x => x.User)
             .ToListAsync(ct);
     }

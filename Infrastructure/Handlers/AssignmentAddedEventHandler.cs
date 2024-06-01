@@ -9,15 +9,15 @@ using Microsoft.Extensions.Options;
 namespace Handlers;
 
 [EventBind(typeof(AssignmentAddedEvent))]
-public interface IAddAssignmentEventHandler : IBackgroundEventHandler;
+public interface IAssignmentAddedEventHandler : IBackgroundEventHandler;
 
-public class AddAssignmentEventHandler : BaseEventHandler<AssignmentAddedEventArgs>, IAddAssignmentEventHandler
+public class AssignmentAddedAddedEventHandler : BaseEventHandler<AssignmentAddedEventArgs>, IAssignmentAddedEventHandler
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailSender _emailSender;
     private readonly IOptionsSnapshot<EmailingOptions> _emailingOptions;
     
-    public AddAssignmentEventHandler(ILogger<BaseEventHandler<AssignmentAddedEventArgs>> logger, IUnitOfWork unitOfWork, IEmailSender emailSender, IOptionsSnapshot<EmailingOptions> emailingOptions) : base(logger)
+    public AssignmentAddedAddedEventHandler(ILogger<BaseEventHandler<AssignmentAddedEventArgs>> logger, IUnitOfWork unitOfWork, IEmailSender emailSender, IOptionsSnapshot<EmailingOptions> emailingOptions) : base(logger)
     {
         _unitOfWork = unitOfWork;
         _emailSender = emailSender;
@@ -37,6 +37,11 @@ public class AddAssignmentEventHandler : BaseEventHandler<AssignmentAddedEventAr
         var toEmails = toUsers
             .Select(x => x.Email)
             .ToList();
+
+        if (toEmails.Count == 0)
+        {
+            return Success();
+        }
 
         var senderClient = _emailingOptions.Value.NotificationSender;
         await _emailSender.SendEmailAsync(new EmailParams

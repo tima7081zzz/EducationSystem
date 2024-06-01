@@ -28,6 +28,17 @@ public class TeacherCourseRepository(DbSet<TeacherCourse> entities) : GenericRep
             .Where(x => x.CourseId == courseId)
             .ExecuteDeleteAsync(ct);
     }
+    
+    public async Task<List<User>> GetUsersForNotification(int courseId, Func<UserNotificationSettings, bool> notificationAction, CancellationToken ct)
+    {
+        return await Entities
+            .Include(x => x.User)
+            .Where(x => x.User.NotificationSettings.IsEnabled && notificationAction(x.User.NotificationSettings))
+            .Where(x => x.CourseId == courseId)
+            .Where(x => x.IsNotificationsEnabled)
+            .Select(x => x.User)
+            .ToListAsync(ct);
+    }
 }
 
 public class UserCourseDto

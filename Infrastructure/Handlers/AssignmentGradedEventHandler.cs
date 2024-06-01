@@ -33,7 +33,14 @@ public class AssignmentGradedEventHandler : BaseEventHandler<AssignmentAddedEven
         EntityNotFoundException.ThrowIfNull(studentAssignment);
 
         var assignment = await _unitOfWork.AssignmentRepository.Get(studentAssignment!.AssignmentId, ct);
-        var studentUser = await _unitOfWork.UserRepository.Get(studentAssignment.UserId, ct);
+
+        var studentUser = (await _unitOfWork.StudentCourseRepository.GetUsersForNotification(assignment!.CourseId,
+            x => x.NewAssignmentEnabled, ct, studentAssignment.UserId)).FirstOrDefault();
+        
+        if (studentUser is null)
+        {
+            return Success();
+        }
 
         var senderClient = _emailingOptions.Value.NotificationSender;
         await _emailSender.SendEmailAsync(new EmailParams

@@ -26,11 +26,7 @@ import { getCourseDetails, CourseModel, getCourseUsers, CourseUsersModel, delete
 import { addAssignment, AddAssignmentRequestModel } from '../services/assignmentService';
 
 const colors = [
-  '#FFCDD2', // light red
-  '#C8E6C9', // light green
-  '#BBDEFB', // light blue
-  '#FFE0B2', // light orange
-  '#E1BEE7', // light purple
+  '#BBDEFB', // light blue 
 ];
 
 const CourseDetailsPage: React.FC = () => {

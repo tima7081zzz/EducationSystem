@@ -37,7 +37,7 @@ public class AssignmentSubmittedEventHandler : BaseEventHandler<AssignmentSubmit
         var studentUser = await _unitOfWork.UserRepository.Get(studentAssignment.UserId, ct);
         
         var teacherUsers = await _unitOfWork.TeacherCourseRepository.GetUsersForNotification(assignment!.CourseId,
-            x => x.NewAssignmentEnabled, ct);
+            x => x.AssignmentSubmittedEnabled, ct);
         
         if (teacherUsers.Count == 0)
         {
@@ -50,7 +50,7 @@ public class AssignmentSubmittedEventHandler : BaseEventHandler<AssignmentSubmit
             FromName = senderClient.Name,
             FromEmail = senderClient.Email,
             Subject = "MyClass. Assignment submitted!",
-            HtmlBody = $"Hello! Assignment {assignment!.Title} was submitted by - {studentUser!.Email}",
+            HtmlBody = $"Hello! Assignment {assignment.Title} was submitted by - {studentUser!.Email}",
             //TextBody = "Assd",
             ToList = teacherUsers.Select(x => x.Email).ToList(),
         }, new ClientParams

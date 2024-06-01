@@ -35,7 +35,7 @@ public class AssignmentGradedEventHandler : BaseEventHandler<AssignmentAddedEven
         var assignment = await _unitOfWork.AssignmentRepository.Get(studentAssignment!.AssignmentId, ct);
 
         var studentUser = (await _unitOfWork.StudentCourseRepository.GetUsersForNotification(assignment!.CourseId,
-            x => x.NewAssignmentEnabled, ct, studentAssignment.UserId)).FirstOrDefault();
+            x => x.GradingAssignmentEnabled, ct, studentAssignment.UserId)).FirstOrDefault();
         
         if (studentUser is null)
         {

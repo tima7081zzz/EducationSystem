@@ -39,7 +39,6 @@ const AssignmentSubmissionForm: React.FC = () => {
       if (submissionFile) {
         console.log('Submitted file:', submissionFile.name);
       }
-      alert('Assignment submitted successfully!');
     }
   };
 

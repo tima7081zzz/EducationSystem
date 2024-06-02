@@ -16,6 +16,7 @@ const LoginPage: React.FC = () => {
         navigate('/home');
       }
     } catch (err) {
+      console.log(err)
       setError('Invalid email or password');
     }
   };

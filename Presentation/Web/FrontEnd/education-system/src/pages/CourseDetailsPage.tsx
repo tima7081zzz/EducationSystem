@@ -64,7 +64,6 @@ const CourseDetailsPage: React.FC = () => {
   const handleCopyPublicId = () => {
     if (course?.publicId) {
       navigator.clipboard.writeText(course.publicId);
-      alert('Course ID copied to clipboard');
     }
   };
 
@@ -73,13 +72,9 @@ const CourseDetailsPage: React.FC = () => {
 
   const handleAddAssignment = async (assignment: AddAssignmentRequestModel) => {
     if (courseId) {
-      try {
-        await addAssignment(assignment);
+      await addAssignment(assignment);
         const data = await getCourseDetails(Number(courseId));
         setCourse(data);
-      } catch (err) {
-        alert('Failed to add assignment.');
-      }
     }
   };
 
@@ -110,13 +105,9 @@ const CourseDetailsPage: React.FC = () => {
 
   const handleDeleteStudent = async (studentId: number) => {
     if (courseId) {
-      try {
-        await deleteStudentFromCourse(studentId);
+      await deleteStudentFromCourse(studentId);
         const users = await getCourseUsers(Number(courseId));
         setCourseUsers(users);
-      } catch (err) {
-        alert('Failed to delete student from course.');
-      }
     }
   };
 

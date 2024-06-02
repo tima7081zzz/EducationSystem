@@ -38,12 +38,10 @@ const HomePage: React.FC = () => {
       await joinCourse(publicId);
       // Optionally, you can navigate to the course page after joining
       // history.push(`/course/${publicId}`);
-      alert('You have successfully joined the course!');
       setJoinCourseDialogOpen(false);
       window.location.reload();
     } catch (error) {
       console.error('Failed to join course:', error);
-      alert('Failed to join the course. Please try again later.');
     }  
   };
 

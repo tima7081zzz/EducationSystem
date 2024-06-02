@@ -40,8 +40,6 @@ const AssignmentOverviewPage: React.FC = () => {
           const data = await getAssignmentOverview(Number(assignmentId));
           setOverview(data);
         }
-      } catch (err) {
-        setError('Failed to fetch assignment overview.');
       } finally {
         setIsLoading(false);
       }
@@ -90,12 +88,8 @@ const AssignmentOverviewPage: React.FC = () => {
         gradingComment
       };
 
-      try {
-        await axios.post(`/api/assignment/${overview.id}/student-user/${selectedStudent.userId}/grade`, request);
+      await axios.post(`/api/assignment/${overview.id}/student-user/${selectedStudent.userId}/grade`, request);
         handleCloseDialog();
-      } catch (err) {
-        alert('Failed to submit grade.');
-      }
     }
   };
 

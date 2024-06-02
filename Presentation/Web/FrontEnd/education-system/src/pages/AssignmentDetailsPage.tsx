@@ -22,8 +22,6 @@ const AssignmentDetailsPage: React.FC = () => {
           const data = await getAssignmentDetails(Number(assignmentId));
           setAssignment(data);
         }
-      } catch (err) {
-        setError('Failed to fetch assignment details.');
       } finally {
         setIsLoading(false);
       }
@@ -57,7 +55,6 @@ const AssignmentDetailsPage: React.FC = () => {
         setAttachment(null); // Clear the selected file after upload
       } catch (error) {
         console.error('Failed to upload attachment:', error);
-        alert('Failed to upload attachment. Please try again later.');
       }
     }
   };
@@ -78,7 +75,6 @@ const AssignmentDetailsPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to submit assignment:', error);
-      alert('Failed to submit assignment. Please try again later.');
     }
   };
 
@@ -91,7 +87,6 @@ const AssignmentDetailsPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Failed to unsubmit assignment:', error);
-      alert('Failed to unsubmit assignment. Please try again later.');
     }
   };
 
@@ -102,7 +97,6 @@ const AssignmentDetailsPage: React.FC = () => {
       setAssignment(updatedAssignment);
     } catch (error) {
       console.error('Failed to delete attachment:', error);
-      alert('Failed to delete attachment. Please try again later.');
     }
   };
 

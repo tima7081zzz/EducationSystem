@@ -22,8 +22,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = new PathString("/Auth/Login");
     });
 builder.Services.AddAuthorization();
-builder.Services.AddRazorPages();
-builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -45,14 +43,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:3000");
+        policy.WithOrigins(builder.Configuration["CorsOrigin"]!);
         policy.AllowCredentials();
         policy.AllowAnyHeader();
         policy.AllowAnyMethod();
     });
 });
-
-//builder.Services.AddAuthentication();
 
 var app = builder.Build();
 
@@ -63,7 +59,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseCustomExceptionHandler();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -72,8 +67,5 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-app.MapRazorPages();
-
 
 app.Run();

@@ -61,9 +61,9 @@ public class AddAssignmentStudentAttachmentCommandHandler : IRequestHandler<AddA
         var assignment = await _unitOfWork.AssignmentRepository.Get(request.AssignmentId, ct);
         EntityNotFoundException.ThrowIfNull(assignment);
 
-        WrongOperationException.ThrowIf(assignment!.CreatorTeacherId == request.UserId);
+        NotAllowedException.ThrowIf(assignment!.CreatorTeacherId == request.UserId);
 
         var studentCourse = await _unitOfWork.StudentCourseRepository.Get(request.UserId, assignment.CourseId, ct);
-        WrongOperationException.ThrowIfNull(studentCourse);
+        NotAllowedException.ThrowIfNull(studentCourse);
     }
 }

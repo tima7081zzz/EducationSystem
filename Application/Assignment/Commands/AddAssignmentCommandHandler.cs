@@ -32,7 +32,7 @@ public class AddAssignmentCommandHandler : IRequestHandler<AddAssignmentCommand,
         var course = await _unitOfWork.CourseRepository.GetWithCourses(courseId, ct);
         EntityNotFoundException.ThrowIfNull(course);
 
-        WrongOperationException.ThrowIf(course!.TeacherCourses.All(x => x.UserId != userId));
+        NotAllowedException.ThrowIf(course!.TeacherCourses.All(x => x.UserId != userId));
 
         var assignment = _unitOfWork.AssignmentRepository.Add(new DAL.Entities.Assignment
         {

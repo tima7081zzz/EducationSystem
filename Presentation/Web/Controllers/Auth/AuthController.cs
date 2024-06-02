@@ -60,7 +60,7 @@ public class AuthController : ControllerBase
 
             return Ok();
         }
-        catch (AlreadyExistsException)
+        catch (ConflictException)
         {
             return Conflict();
         }

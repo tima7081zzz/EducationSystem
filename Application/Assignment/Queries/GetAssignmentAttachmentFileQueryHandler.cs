@@ -29,7 +29,7 @@ public class GetAssignmentAttachmentFileQueryHandler : IRequestHandler<GetAssign
             var assignmentId = assignmentAttachment.StudentAssignment.AssignmentId;
             var isTeacher = await _unitOfWork.AssignmentRepository.IsTeacherForAssignment(request.UserId, assignmentId, ct);
             
-            WrongOperationException.ThrowIf(!isTeacher);
+            NotAllowedException.ThrowIf(!isTeacher);
         }
 
         var blobRaw = await _blobStorageManager.Download(assignmentAttachment.BlobName, ct);

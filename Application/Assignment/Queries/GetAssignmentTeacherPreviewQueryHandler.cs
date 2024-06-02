@@ -40,12 +40,12 @@ public class GetAssignmentTeacherPreviewQueryHandler : IRequestHandler<GetAssign
     {
         var (userId, studentUserId, assignmentId) = request;
 
-        WrongOperationException.ThrowIf(!await _unitOfWork.AssignmentRepository.IsTeacherForAssignment(userId, assignmentId, ct));
+        NotAllowedException.ThrowIf(!await _unitOfWork.AssignmentRepository.IsTeacherForAssignment(userId, assignmentId, ct));
 
         var studentAssignment = await _unitOfWork.StudentAssignmentRepository.GetWithAttachments(studentUserId, assignmentId, ct);
         EntityNotFoundException.ThrowIfNull(studentAssignment);
 
-        WrongOperationException.ThrowIf(studentAssignment!.Status is StudentCourseTaskStatus.NotSubmitted);
+        NotAllowedException.ThrowIf(studentAssignment!.Status is StudentCourseTaskStatus.NotSubmitted);
 
         return studentAssignment;
     }

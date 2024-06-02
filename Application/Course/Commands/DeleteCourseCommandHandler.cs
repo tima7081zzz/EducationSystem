@@ -20,7 +20,7 @@ public class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand>
         var course = await _unitOfWork.CourseRepository.GetWithCourses(request.CourseId, ct);
 
         EntityNotFoundException.ThrowIfNull(course);
-        WrongOperationException.ThrowIf(course!.TeacherCourses.All(x => x.UserId != request.UserId));
+        NotAllowedException.ThrowIf(course!.TeacherCourses.All(x => x.UserId != request.UserId));
 
         //todo: replace with stored procedure
         

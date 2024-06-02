@@ -2,9 +2,9 @@
 
 namespace Core.Exceptions;
 
-public class EntityNotFoundException : HttpNotSuccessException
+public class NotAllowedException : HttpNotSuccessException
 {
-    public EntityNotFoundException(string? message = null) : base(HttpStatusCode.NotFound, message)
+    public NotAllowedException(string? message = null) : base(HttpStatusCode.Forbidden, message)
     {
     }
     
@@ -12,7 +12,7 @@ public class EntityNotFoundException : HttpNotSuccessException
     {
         if (condition)
         {
-            throw new EntityNotFoundException(message);
+            throw new NotAllowedException(message);
         }
     }
     
@@ -20,7 +20,7 @@ public class EntityNotFoundException : HttpNotSuccessException
     {
         if (obj is null)
         {
-            throw new EntityNotFoundException(message);
+            throw new NotAllowedException(message);
         }
     }
 }

@@ -74,11 +74,11 @@ public class GradeAssignmentCommandHandler : IRequestHandler<GradeAssignmentComm
         var assignment = await _unitOfWork.AssignmentRepository.Get(assignmentId, ct);
         EntityNotFoundException.ThrowIfNull(assignment);
 
-        WrongOperationException.ThrowIf(assignment!.MaxGrade < grade);
+        NotAllowedException.ThrowIf(assignment!.MaxGrade < grade);
 
         var course = await _unitOfWork.CourseRepository.GetWithCourses(assignment.CourseId, ct);
         
-        WrongOperationException.ThrowIf(course!.TeacherCourses.All(x=> x.UserId != userId));
+        NotAllowedException.ThrowIf(course!.TeacherCourses.All(x=> x.UserId != userId));
 
         return course;
     }

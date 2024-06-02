@@ -26,7 +26,7 @@ public class JoinCourseCommandHandler : IRequestHandler<JoinCourseCommand>
         var notHaveAccess = course!.CreatorUserId == userId ||
                             course.TeacherCourses.Any(x => x.UserId == userId) ||
                             course.StudentCourses.Any(x => x.UserId == userId);
-        WrongOperationException.ThrowIf(notHaveAccess);
+        NotAllowedException.ThrowIf(notHaveAccess);
 
         _unitOfWork.StudentCourseRepository.Add(new StudentCourse
         {

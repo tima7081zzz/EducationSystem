@@ -58,7 +58,7 @@ public class LoginService : ILoginService
         var user = await _unitOfWork.UserRepository.Get(dto.Email, ct);
         if (user is not null)
         {
-            throw new AlreadyExistsException();
+            throw new ConflictException();
         }
 
         user = _unitOfWork.UserRepository.Add(new User

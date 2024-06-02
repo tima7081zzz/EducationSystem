@@ -23,7 +23,7 @@ public class DeleteStudentCommandHandler : IRequestHandler<DeleteStudentCommand>
         EntityNotFoundException.ThrowIfNull(studentCourse);
 
         var course = await _unitOfWork.CourseRepository.GetWithCourses(studentCourse!.CourseId, ct);
-        WrongOperationException.ThrowIf(course!.TeacherCourses.All(x => x.UserId != userId));
+        NotAllowedException.ThrowIf(course!.TeacherCourses.All(x => x.UserId != userId));
 
         await using var transaction = _unitOfWork.BeginTransaction();
         

@@ -58,9 +58,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItem button component={Link} to="/home">
               <ListItemText primary="Home" />
             </ListItem>
-            {/* Add the Settings menu item */}
             <ListItem button component={Link} to="/settings">
               <ListItemText primary="Settings" />
+            </ListItem>
+            <ListItem button component={Link} to="/course/recommendations">
+              <ListItemText primary="Recommendations" />
             </ListItem>
           </List>
         </Box>

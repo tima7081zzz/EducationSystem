@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import Layout from './components/common/Layout';
 import AssignmentOverviewPage from './pages/AssignmentOverviewPage';
 import SettingsPage from './pages/SettingsPage';
+import RecommendedCoursesPage from './pages/RecommendedCoursesPage';
 
 const App: React.FC = () => {
   return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Route path="/course/:courseId/assignment/:assignmentId/overview" element={<AssignmentOverviewPage/>} />
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/course/recommendations" element={<RecommendedCoursesPage />} />
       </Routes>
     </Router>
   );

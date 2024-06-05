@@ -55,6 +55,11 @@ const getUserCourses = async (): Promise<GetUserCoursesResponseModel> => {
   return response.data;
 };
 
+const getRecommendedCourses = async (): Promise<GetUserCoursesResponseModel> => {
+  const response = await axios.get<GetUserCoursesResponseModel>('/api/course/recommended');
+  return response.data;
+};
+
 const createCourse = async (course: CreateCourseRequestModel): Promise<CreateCourseResponseModel> => {
   const response = await axios.post<CreateCourseResponseModel>('/api/course', course);
   return response.data;
@@ -78,4 +83,4 @@ const deleteStudentFromCourse = async (id: number): Promise<void> => {
   await axios.delete(`/api/course/student-course/${id}`);
 };
 
-export { getUserCourses, createCourse, getCourseDetails, joinCourse, getCourseUsers, deleteStudentFromCourse };
+export { getUserCourses, getRecommendedCourses, createCourse, getCourseDetails, joinCourse, getCourseUsers, deleteStudentFromCourse };

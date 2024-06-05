@@ -28,6 +28,7 @@ public class User
     public ICollection<StudentAssignmentAttachment> StudentAssignmentAttachments { get; set; } = [];
     public ICollection<StudentCourse> StudentCourses { get; set; } = [];
     public ICollection<TeacherCourse> TeacherCourses { get; set; } = [];
+    public ICollection<RecommendedCourse> RecommendedCourses { get; set; } = [];
 
     public UserNotificationSettings NotificationSettings { get; set; }
 }

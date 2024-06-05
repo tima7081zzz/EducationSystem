@@ -15,6 +15,7 @@ public interface IUnitOfWork
     StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
     StudentAssignmentRepository StudentAssignmentRepository { get; }
     UserNotificationSettingsRepository UserNotificationSettingsRepository { get; }
+    RecommendedCourseRepository RecommendedCourseRepository { get; }
 }
 
 public class UnitOfWork : IUnitOfWork
@@ -28,6 +29,7 @@ public class UnitOfWork : IUnitOfWork
     public StudentAssignmentAttachmentRepository StudentAssignmentAttachmentRepository { get; }
     public StudentAssignmentRepository StudentAssignmentRepository { get; }
     public UserNotificationSettingsRepository UserNotificationSettingsRepository { get; }
+    public RecommendedCourseRepository RecommendedCourseRepository { get; }
 
     public UnitOfWork(DataContext dataContext)
     {
@@ -42,6 +44,7 @@ public class UnitOfWork : IUnitOfWork
         StudentAssignmentAttachmentRepository = new StudentAssignmentAttachmentRepository(dataContext.StudentAssignmentAttachments);
         StudentAssignmentRepository = new StudentAssignmentRepository(dataContext.StudentAssignments);
         UserNotificationSettingsRepository = new UserNotificationSettingsRepository(dataContext.UserNotificationSettings);
+        RecommendedCourseRepository = new RecommendedCourseRepository(dataContext.RecommendedCourses);
     }
     
     public IDbContextTransaction BeginTransaction()

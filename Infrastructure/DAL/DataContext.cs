@@ -19,6 +19,7 @@ public class DataContext : DbContext
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<StudentAssignmentAttachment> StudentAssignmentAttachments { get; set; }
     public DbSet<StudentAssignment> StudentAssignments { get; set; }
+    public DbSet<RecommendedCourse> RecommendedCourses { get; set; }
     public DbSet<UserNotificationSettings> UserNotificationSettings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -32,6 +33,7 @@ public class DataContext : DbContext
             u.HasMany(x => x.TeacherCourses).WithOne(y => y.User).OnDelete(DeleteBehavior.NoAction);
             u.HasMany(x => x.Assignments).WithOne(y => y.CreatorTeacher).OnDelete(DeleteBehavior.NoAction);
             u.HasMany(x => x.StudentAssignmentAttachments).WithOne(y => y.StudentUser).OnDelete(DeleteBehavior.NoAction);
+            u.HasMany(x => x.RecommendedCourses).WithOne(y => y.User).OnDelete(DeleteBehavior.NoAction);
             u.HasOne(x => x.NotificationSettings).WithOne(y => y.User).OnDelete(DeleteBehavior.NoAction);
         });
 

@@ -29,5 +29,5 @@ public class User
     public ICollection<StudentCourse> StudentCourses { get; set; } = [];
     public ICollection<TeacherCourse> TeacherCourses { get; set; } = [];
 
-    public UserNotificationSettings NotificationSettings { get; set; }
+    public UserNotificationSettings NotificationSettings { get; set; } = default!;
 }

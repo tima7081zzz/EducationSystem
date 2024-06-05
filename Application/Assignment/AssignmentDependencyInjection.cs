@@ -17,7 +17,6 @@ public static class AssignmentDependencyInjection
     
     private static IServiceCollection ConfigureJob(this IServiceCollection services)
     {
-
         services.AddQuartz(q =>
         {
             var jobKey = new JobKey("EnqueueAssignmentDeadlineReminderTimerJob");

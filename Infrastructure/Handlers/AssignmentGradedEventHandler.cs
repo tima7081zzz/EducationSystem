@@ -48,9 +48,9 @@ public class AssignmentGradedEventHandler : BaseEventHandler<AssignmentGradedEve
             FromName = senderClient.Name,
             FromEmail = senderClient.Email,
             Subject = "MyClass. Assignment graded!",
-            HtmlBody = $"Hello! Assignment {assignment!.Title} was graded - {studentAssignment.Grade}",
+            HtmlBody = $"Hello! Assignment {assignment.Title} was graded - {studentAssignment.Grade}",
             //TextBody = "Assd",
-            ToList = [studentUser!.Email],
+            ToList = [studentUser.Email],
         }, new ClientParams
         {
             Username = senderClient.Username,

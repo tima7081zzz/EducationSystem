@@ -16,7 +16,7 @@ public class EventRaiser : IEventRaiser
         _backgroundEventHandlerRunner = backgroundEventHandlerRunner;
     }
 
-    public async ValueTask RaiseBatch(IEnumerable<IEvent> events, CancellationToken ct)
+    public ValueTask RaiseBatch(IEnumerable<IEvent> events, CancellationToken ct)
     {
         var eventList = new List<IEvent>(events);
 
@@ -36,5 +36,7 @@ public class EventRaiser : IEventRaiser
                 _backgroundEventHandlerRunner.RunEventHandler(handlerType, eventArgs);
             }
         }
+
+        return ValueTask.CompletedTask;
     }
 }

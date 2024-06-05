@@ -1,6 +1,7 @@
 using Assignment;
 using BlobStorage.DI;
 using Course;
+using CourseRecommendations;
 using Emailing.DI;
 using Events.DI;
 using Handlers.DI;
@@ -35,7 +36,8 @@ builder.Services
     .AddEmailing(builder.Configuration)
     .AddCourse()
     .AddAssignment()
-    .AddSettings();
+    .AddSettings()
+    .AddCourseRecommendations();
 
 builder.Services.AddControllers();
 

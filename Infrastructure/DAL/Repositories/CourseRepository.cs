@@ -22,4 +22,9 @@ public class CourseRepository(DbSet<Course> entities) : GenericRepository<Course
             .Where(x => x.Id == id)
             .FirstOrDefaultAsync(ct);
     }
+
+    public async Task<List<Course>> GetAll(CancellationToken ct)
+    {
+        return await Entities.ToListAsync(ct);
+    }
 }

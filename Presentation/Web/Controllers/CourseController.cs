@@ -77,4 +77,11 @@ public class CourseController : BaseController
         await _mediator.Send(new ToggleCourseNotificationsCommand(UserId, id), ct);
         return Ok();
     }
+    
+    [HttpGet("recommended")]
+    public async Task<IActionResult> GetRecommendedCourses(CancellationToken ct)
+    {
+        var courses = await _mediator.Send(new GetRecommendedCoursesQuery(UserId), ct);
+        return Ok(new {UserCourses = courses});
+    }
 }

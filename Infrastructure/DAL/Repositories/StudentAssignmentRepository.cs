@@ -46,4 +46,9 @@ public class StudentAssignmentRepository(DbSet<StudentAssignment> entities) : Ge
             .Where(x => x.UserId == userId)
             .ExecuteDeleteAsync(ct);
     }
+
+    public async Task<List<StudentAssignment>> GetByCourse(int courseId, CancellationToken ct)
+    {
+        return await Entities.Where(x => x.Assignment.CourseId == courseId).ToListAsync(ct);
+    }
 }

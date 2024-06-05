@@ -61,4 +61,19 @@ public class StudentCourseRepository(DbSet<StudentCourse> entities) : GenericRep
             .Where(x => x.UserId == userId)
             .ExecuteDeleteAsync(ct);
     }
+
+    public async Task<List<StudentCourse>> GetCommonUsers(int userId, int courseId, CancellationToken ct)
+    {
+        return await Entities
+            .Where(x => x.CourseId == courseId)
+            .Join(
+                Entities.Where(sc => sc.UserId == userId),
+                sc1 => sc1.CourseId,
+                sc2 => sc2.CourseId,
+                (sc1, sc2) => sc1
+            )
+            .Where(sc1 => sc1.UserId != userId)
+            .Distinct()
+            .ToListAsync(ct);
+    }
 }

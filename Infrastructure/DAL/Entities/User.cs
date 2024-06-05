@@ -30,5 +30,5 @@ public class User
     public ICollection<TeacherCourse> TeacherCourses { get; set; } = [];
     public ICollection<RecommendedCourse> RecommendedCourses { get; set; } = [];
 
-    public UserNotificationSettings NotificationSettings { get; set; }
+    public UserNotificationSettings NotificationSettings { get; set; } = default!;
 }

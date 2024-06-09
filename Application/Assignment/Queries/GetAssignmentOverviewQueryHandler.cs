@@ -37,7 +37,7 @@ public class GetAssignmentOverviewQueryHandler : IRequestHandler<GetAssignmentOv
             Id = assignment.Id,
             Title = assignment.Title,
             SubmittedCount = studentAssignments.Values.Count(x => x.SubmittedAt is not null),
-            NotSubmittedCount = studentAssignments.Values.Count(x => x.SubmittedAt is not null),
+            NotSubmittedCount = studentAssignments.Values.Count(x => x.SubmittedAt is null),
             GradedCount = studentAssignments.Values.Count(x => x.Grade is not null),
             MaxGrade = assignment.MaxGrade,
             StudentAssignmentInfos = studentCourses.Select(x =>

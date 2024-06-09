@@ -6,7 +6,7 @@ export interface AddAssignmentRequestModel {
   title: string;
   description?: string;
   userId: number;
-  deadline: string;
+  deadline?: string;
 }
 
 export interface AttachmentModel {
@@ -21,6 +21,7 @@ export interface AttachmentModel {
     createdAt: string;
     deadline: string;
     maxGrade?: number;
+    grade?: number;
     attachments: AttachmentModel[];
     status: StudentCourseTaskStatus;
 }

@@ -29,7 +29,6 @@ public class GetAssignmentQueryHandler : IRequestHandler<GetAssignmentQuery, Ass
                 Assignment = assignment,
                 AssignmentId = assignment.Id,
                 Status = StudentCourseTaskStatus.NotSubmitted,
-                StudentAssignmentAttachments = new List<StudentAssignmentAttachment>()
             };
         }
 
@@ -41,6 +40,7 @@ public class GetAssignmentQueryHandler : IRequestHandler<GetAssignmentQuery, Ass
             CreatedAt = studentAssignment.Assignment.CreatedAt,
             Deadline = studentAssignment.Assignment.Deadline,
             MaxGrade = studentAssignment.Assignment.MaxGrade,
+            Grade = studentAssignment.Grade,
             Status = studentAssignment.Status,
             SubmissionComment = studentAssignment.SubmissionComment,
             Attachments = studentAssignment.StudentAssignmentAttachments.Select(x=> new AttachmentModel
@@ -76,6 +76,7 @@ public class AssignmentModel
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset Deadline { get; set; }
     public int? MaxGrade { get; set; }
+    public double? Grade { get; set; }
     public StudentCourseTaskStatus Status { get; set; }
     public string? SubmissionComment { get; set; }
     public IEnumerable<AttachmentModel> Attachments { get; set; } = [];

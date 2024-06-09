@@ -145,7 +145,7 @@ const AssignmentDetailsPage: React.FC = () => {
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
               {assignment.maxGrade && (
                 <Typography variant="body2" color="textSecondary">
-                  0/{assignment.maxGrade}
+                  {assignment.grade !== undefined ? assignment.grade : 0}/{assignment.maxGrade}
                 </Typography>
               )}
               <Typography variant="body2" color="textSecondary">

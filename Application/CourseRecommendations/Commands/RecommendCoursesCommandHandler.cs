@@ -9,6 +9,7 @@ public record RunRecommendingCoursesCommand : IRequest;
 public class RecommendCoursesCommandHandler : IRequestHandler<RunRecommendingCoursesCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private const int NumberOfCoursesToRecommend = 5;
 
     public RecommendCoursesCommandHandler(IUnitOfWork unitOfWork)
     {
@@ -35,6 +36,11 @@ public class RecommendCoursesCommandHandler : IRequestHandler<RunRecommendingCou
                     TopsisScore = topsisScore
                 });
             }
+
+            recommendations = recommendations
+                .OrderByDescending(x => x.TopsisScore)
+                .Take(NumberOfCoursesToRecommend)
+                .ToList();
 
             await _unitOfWork.RecommendedCourseRepository.Add(recommendations, ct);
         }

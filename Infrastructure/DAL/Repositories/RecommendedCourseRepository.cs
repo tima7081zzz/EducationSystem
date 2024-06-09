@@ -21,4 +21,11 @@ public class RecommendedCourseRepository(DbSet<RecommendedCourse> entities)
             .Take(take)
             .ToListAsync(ct);
     }
+
+    public async Task DeleteForUser(int userId, CancellationToken ct)
+    {
+        await Entities
+            .Where(x => x.UserId == userId)
+            .ExecuteDeleteAsync(ct);
+    }
 };

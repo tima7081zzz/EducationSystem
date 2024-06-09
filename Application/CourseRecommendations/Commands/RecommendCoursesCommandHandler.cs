@@ -42,10 +42,14 @@ public class RecommendCoursesCommandHandler : IRequestHandler<RunRecommendingCou
                 .Take(NumberOfCoursesToRecommend)
                 .ToList();
 
-            await _unitOfWork.RecommendedCourseRepository.Add(recommendations, ct);
-        }
+            await using var transaction = _unitOfWork.BeginTransaction();
 
-        await _unitOfWork.SaveChanges(ct);
+            await _unitOfWork.RecommendedCourseRepository.DeleteForUser(user.Id, ct);
+            await _unitOfWork.RecommendedCourseRepository.Add(recommendations, ct);
+            
+            await _unitOfWork.SaveChanges(ct);
+            await transaction.CommitAsync(ct);
+        }
     }
 
     private async Task<double> CalculateTopsisRecommendationRate(User user, Course course, CancellationToken ct)
